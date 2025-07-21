@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coggnify - AI Horse Documentation</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        .app {
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 64px;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 8px rgba(210, 105, 30, 0.3));
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(45deg, #D2691E, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        
+        .description {
+            font-size: 14px;
+            color: #666;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .upload-area {
+            border: 2px dashed #D2691E;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            background: rgba(210, 105, 30, 0.05);
+            cursor: pointer;
+            margin: 20px;
+            max-width: 400px;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            background: rgba(210, 105, 30, 0.1);
+            border-color: #ff6b35;
+            transform: translateY(-2px);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            margin: 20px;
+            padding: 16px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #D2691E, #ff6b35);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(210, 105, 30, 0.3);
+        }
+        
+        .btn.secondary {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #333;
+        }
+        
+        .processing {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #333;
+            border-top: 2px solid #D2691E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <div class="logo">🐴</div>
+            <h1 class="title">Coggnify</h1>
+            <p class="subtitle">AI-Powered Horse Documentation</p>
+            <p class="description">Upload your horse video and let Luma AI create professional 360° documentation</p>
+        </div>
+        
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📹</div>
+            <div class="upload-text">Upload Horse Video</div>
+            <div class="upload-hint">Walk around your horse • 10-30 seconds • MP4/MOV</div>
+            <input type="file" id="fileInput" class="file-input" accept="video/*" onchange="uploadVideo(this.files[0])">
+        </div>
+        
+        <div class="status" id="status">
+            ✅ Ready to upload horse videos to Luma AI
+            <div class="processing" id="processing">
+                <div class="spinner"></div>
+                <span>Processing with Luma AI...</span>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn" onclick="testConnection()">🧪 Test Connection</button>
+            <button class="btn secondary" onclick="showDemo()">👀 View Demo</button>
+            <button class="btn secondary" onclick="showInfo()">ℹ️ About</button>
+        </div>
+    </div>
+    
+    <script>
+        console.log('🐴 Coggnify loading...');
+        
+        async function uploadVideo(file) {
+            if (!file) {
+                console.log('No file selected');
+                return;
+            }
+            
+            console.log('File selected:', file.name, file.size);
+            
+            var status = document.getElementById('status');
+            var processing = document.getElementById('processing');
+            
+            status.innerHTML = '🔄 Uploading to Luma AI...';
+            processing.style.display = 'flex';
+            
+            try {
+                console.log('Sending to Netlify function...');
+                
+                var response = await fetch('/.netlify/functions/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: 'Create a smooth 360-degree view of this horse for veterinary documentation',
+                        filename: file.name,
+                        size: file.size,
+                        type: file.type
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                
+                var result = await response.json();
+                console.log('Response data:', result);
+                
+                processing.style.display = 'none';
+                
+                if (result.success) {
+                    status.innerHTML = '✅ Upload successful! Luma AI processing started...';
+                    console.log('Success:', result.data);
+                } else {
+                    status.innerHTML = '❌ Error: ' + (result.message || 'Unknown error');
+                    console.error('API Error:', result);
+                }
+                
+            } catch (error) {
+                processing.style.display = 'none';
+                status.innerHTML = '❌ Upload failed: ' + error.message;
+                console.error('Upload error:', error);
+            }
+        }
+        
+        async function testConnection() {
+            console.log('Testing connection...');
+            
+            var status = document.getElementById('status');
+            status.innerHTML = '🧪 Testing Luma AI connection...';
+            
+            try {
+                var response = await fetch('/.netlify/functions/luma', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        test: true
+                    })
+                });
+                
+                console.log('Test response:', response.status);
+                
+                if (response.ok) {
+                    var result = await response.json();
+                    console.log('Test result:', result);
+                    
+                    if (result.apiKeySet) {
+                        status.innerHTML = '✅ Connection test successful! API key configured.';
+                    } else {
+                        status.innerHTML = '⚠️ Function works but API key not set in environment variables';
+                    }
+                } else {
+                    status.innerHTML = '❌ Connection test failed: HTTP ' + response.status;
+                }
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                status.innerHTML = '❌ Connection error: ' + error.message;
+            }
+        }
+        
+        function showDemo() {
+            var demoText = '🐴 Demo Info:\n\n1. Record a video walking around your horse\n2. Upload the video here\n3. Luma AI creates a professional 360° viewer\n4. Add interactive hotspots for veterinary documentation\n\nPerfect for insurance, sales, and medical records!';
+            alert(demoText);
+        }
+        
+        function showInfo() {
+            var infoText = 'ℹ️ Coggnify Features:\n\n• AI-powered 360° horse documentation\n• Professional quality like car dealerships\n• Interactive hotspots for medical notes\n• USDA compliance reporting\n• Veterinary integration\n• Insurance documentation';
+            alert(infoText);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Coggnify initialized successfully');
+            console.log('Ready to upload horse videos');
+        });
+        
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.error);
+            var status = document.getElementById('status');
+            if (status) {
+                status.innerHTML = '❌ JavaScript error: ' + e.message;
+            }
+        });
+        
+    </script>
+</body>
+</html>
