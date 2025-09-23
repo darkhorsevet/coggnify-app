@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WAITD MVP - Equine Scheduling Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <span class="logo">🩺🐴</span>
+        <h1>WAITD • Equine Scheduler (MVP)</h1>
+      </div>
+      <div class="header-actions">
+        <button id="btn-print" title="Print dashboard">Print</button>
+        <a class="link" href="./README.md" target="_blank">README</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <section class="panel">
+          <h2>Scenario</h2>
+          <label>
+            <span>Preset</span>
+            <select id="scenario-select">
+              <option value="baseline" selected>Baseline Day</option>
+              <option value="midday-emergency">Midday Emergency</option>
+              <option value="herd-day">Herd Visit Day</option>
+            </select>
+          </label>
+          <label>
+            <span>Provider</span>
+            <select id="provider-select"></select>
+          </label>
+          <label>
+            <span>Start time</span>
+            <input id="start-time" type="time" value="07:30" />
+          </label>
+          <label>
+            <span>End time</span>
+            <input id="end-time" type="time" value="18:00" />
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Equine constraints</h2>
+          <label class="checkbox">
+            <input id="chk-biosecurity" type="checkbox" checked />
+            <span>Biosecurity order (Low → Medium → High)</span>
+          </label>
+          <label class="checkbox">
+            <input id="chk-herd-grouping" type="checkbox" checked />
+            <span>Group herd visits at same barn</span>
+          </label>
+          <label class="checkbox">
+            <input id="chk-emergency-slack" type="checkbox" checked />
+            <span>Reserve emergency slack (30 min)</span>
+          </label>
+          <label>
+            <span>Average speed (mph)</span>
+            <input id="speed-mph" type="number" min="10" max="70" value="40" />
+          </label>
+          <label>
+            <span>Load/Unload (min)</span>
+            <input id="load-min" type="number" min="0" max="60" value="10" />
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Booking</h2>
+          <button id="btn-add-booking">Add booking</button>
+          <button id="btn-reset">Reset demo</button>
+          <button id="btn-run">Run optimizer</button>
+        </section>
+      </aside>
+
+      <section class="content">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Avg client wait</div><div id="kpi-wait" class="kpi-value">–</div></div>
+          <div class="kpi"><div class="kpi-label">Utilization</div><div id="kpi-util" class="kpi-value">–</div></div>
+          <div class="kpi"><div class="kpi-label">Travel miles</div><div id="kpi-miles" class="kpi-value">–</div></div>
+          <div class="kpi"><div class="kpi-label">Overtime</div><div id="kpi-ot" class="kpi-value">–</div></div>
+        </section>
+
+        <section class="board">
+          <div class="board-col">
+            <h3>Timeline</h3>
+            <div id="timeline" class="timeline"></div>
+          </div>
+          <div class="board-col">
+            <h3>Route & Stops</h3>
+            <ol id="stops" class="stops"></ol>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <header class="modal-header">
+          <h3>New booking</h3>
+          <button id="modal-close" aria-label="Close">✕</button>
+        </header>
+        <div class="modal-body">
+          <label>
+            <span>Owner</span>
+            <input id="bk-owner" type="text" placeholder="e.g., Joe Robinson" />
+          </label>
+          <label>
+            <span>Farm</span>
+            <select id="bk-farm"></select>
+          </label>
+          <label>
+            <span>Appointment type</span>
+            <select id="bk-type"></select>
+          </label>
+          <label>
+            <span>Preferred window</span>
+            <select id="bk-window">
+              <option value="08:00-10:00">08:00–10:00</option>
+              <option value="10:00-12:00">10:00–12:00</option>
+              <option value="13:00-15:00">13:00–15:00</option>
+              <option value="15:00-17:00">15:00–17:00</option>
+            </select>
+          </label>
+        </div>
+        <footer class="modal-footer">
+          <button id="bk-submit">Add</button>
+        </footer>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
+
