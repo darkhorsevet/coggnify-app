@@ -6,7 +6,16 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
 
 ## Features
 
-### 📞 Phone Call Recording (NEW!)
+### 🤖 AI Field Assistant (NEW! Game Changer!)
+- **Emergency protocol guidance** - Colic, laceration, choke, lameness, eye emergencies
+- **Drug dosage calculator** - Instant calculations by weight
+- **Voice input** - Hands-free operation in field situations
+- **Decision support** - Step-by-step clinical guidance
+- **Differential diagnosis** - AI-powered suggestions
+- **Quick reference** - Normal vitals, procedures, protocols
+- **Chat history** - Save important conversations to consultations
+
+### 📞 Phone Call Recording
 - **Automatic call detection** - Detects incoming and outgoing calls
 - **One-tap recording** - Start recording phone consultations instantly
 - **Call summary** - AI generates concise summaries of phone conversations
@@ -82,13 +91,16 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
      - `ConsultationManager.swift`
      - `AudioRecorder.swift`
      - `SettingsView.swift`
-     - `CallManager.swift` ⭐ NEW
-     - `CallRecordingView.swift` ⭐ NEW
-     - `PhoneConsultationDetailView.swift` ⭐ NEW
+     - `CallManager.swift`
+     - `CallRecordingView.swift`
+     - `PhoneConsultationDetailView.swift`
+     - `AIAssistantView.swift` ⭐ NEW
+     - `AIAssistantManager.swift` ⭐ NEW
 
 3. **Configure permissions in Info.plist:**
    - Copy the provided `Info.plist` or add these keys:
-     - `NSMicrophoneUsageDescription`: "Notalyze needs microphone access to record veterinary consultations and phone calls"
+     - `NSMicrophoneUsageDescription`: "Notalyze needs microphone access to record consultations and for voice commands"
+     - `NSSpeechRecognitionUsageDescription`: "Notalyze uses speech recognition for hands-free AI assistant in field emergencies"
      - `UIBackgroundModes`: Add "audio" and "voip" for call recording
 
 4. **Add required frameworks:**
@@ -96,9 +108,10 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
    - Go to "Frameworks, Libraries, and Embedded Content"
    - Add: `CallKit.framework`
    - Add: `UserNotifications.framework`
+   - Add: `Speech.framework` ⭐ NEW
 
 5. **Build and run:**
-   - Select your target device (phone call features require a real device)
+   - Select your target device (speech & call features require a real device)
    - Press ⌘+R to build and run
 
 ## Usage
@@ -127,6 +140,38 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
 - Scheduling and coordination calls
 
 **Legal Note:** Recording laws vary by location. The app reminds you to inform callers they're being recorded. Always comply with local two-party consent laws.
+
+### Using the AI Field Assistant (Absolutely Essential! 🤖)
+
+**Like having a senior vet in your pocket at 2 AM:**
+
+1. **Open the AI Assistant tab** (stethoscope icon)
+2. **Tap an emergency button** for instant protocols:
+   - 🚨 Colic Assessment
+   - 🩹 Laceration Management
+   - 😰 Choke Protocol
+   - 🤕 Lameness Evaluation
+   - 👁️ Eye Emergency
+   - 💊 Drug Calculator
+3. **Or just ask naturally:**
+   - "What's the flunixin dose for a 520kg horse?"
+   - "Walk me through colic severity assessment"
+   - "Is 68 bpm high for colic?"
+4. **Use voice input** when your hands are busy/dirty
+   - Tap the microphone button
+   - Speak naturally
+   - Get instant answers
+5. **Chat continues** - ask follow-ups
+6. **Save important conversations** to consultation notes
+
+**Perfect for:**
+- Emergency field calls
+- Drug dosage verification
+- Decision support (medical vs surgical?)
+- Quick reference when you can't remember
+- Step-by-step procedure guidance
+
+**See `AI_ASSISTANT_GUIDE.md` for complete documentation!**
 
 ### Creating a Consultation
 

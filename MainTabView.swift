@@ -50,7 +50,7 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
-                .tag(4)
+                .tag(5)
         }
         .accentColor(.green)
         .onAppear {

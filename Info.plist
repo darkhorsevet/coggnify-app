@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Notalyze needs microphone access to record veterinary consultations and phone calls to generate AI-powered notes.</string>
+    <string>Notalyze needs microphone access to record veterinary consultations, phone calls, and for voice commands to the AI assistant.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Notalyze uses speech recognition for hands-free voice commands to the AI assistant during field emergencies.</string>
     <key>UIBackgroundModes</key>
     <array>
         <string>audio</string>
