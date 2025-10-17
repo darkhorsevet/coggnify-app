@@ -30,20 +30,27 @@ struct MainTabView: View {
                 }
                 .tag(1)
             
+            // Echo AI Assistant
+            AIAssistantView()
+                .tabItem {
+                    Label("Echo", systemImage: "waveform.circle.fill")
+                }
+                .tag(2)
+            
             // Phone Calls
             CallRecordingView(callManager: callManager)
                 .tabItem {
                     Label("Phone Calls", systemImage: "phone.fill")
                 }
                 .badge(callManager.isInCall ? "•" : nil)
-                .tag(2)
+                .tag(3)
             
             // Templates
             TemplatesView()
                 .tabItem {
                     Label("Templates", systemImage: "doc.text")
                 }
-                .tag(3)
+                .tag(4)
             
             // Settings
             SettingsView()

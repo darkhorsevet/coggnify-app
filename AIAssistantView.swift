@@ -109,7 +109,7 @@ struct AIAssistantView: View {
                         .background(Color(.systemBackground))
                     }
                 }
-                .navigationTitle("AI Assistant")
+                .navigationTitle("Echo")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -118,9 +118,13 @@ struct AIAssistantView: View {
                                 Label("Clear Chat", systemImage: "trash")
                             }
                             
-                            Button(action: {}) {
-                                Label("Save to Consultation", systemImage: "doc.badge.plus")
-                            }
+                    Button(action: { assistantManager.createEstimate() }) {
+                        Label("Create Estimate from Chat", systemImage: "dollarsign.circle")
+                    }
+                    
+                    Button(action: {}) {
+                        Label("Save to Consultation", systemImage: "doc.badge.plus")
+                    }
                             
                             Divider()
                             
@@ -152,6 +156,11 @@ struct AIAssistantView: View {
                         assistantManager.loadEmergencyProtocol(.drugCalculator)
                     }
                     Button("Cancel", role: .cancel) {}
+                }
+            }
+            .sheet(isPresented: $assistantManager.showingEstimate) {
+                if let estimate = assistantManager.generatedEstimate {
+                    EstimateView(estimate: estimate)
                 }
             }
         }
@@ -192,10 +201,10 @@ struct WelcomeAssistantView: View {
                             .foregroundColor(.white)
                     }
                     
-                    Text("AI Field Assistant")
+                    Text("Echo")
                         .font(.title.bold())
                     
-                    Text("Your virtual colleague for emergency situations")
+                    Text("Your AI assistant for emergencies, estimates & more")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)

@@ -318,19 +318,40 @@ class CallManager: NSObject, ObservableObject {
         // Create a new consultation with phone call data
         print("✅ Created phone consultation with summary and action items")
         
-        // Post notification to create consultation in the app
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(
-                name: NSNotification.Name("CreatePhoneConsultation"),
-                object: nil,
-                userInfo: [
-                    "transcript": transcript,
-                    "summary": summary,
-                    "actionItems": actionItems,
-                    "audioURL": audioURL.path,
-                    "duration": self.currentCallDuration
-                ]
+        // Generate estimate from call
+        let estimateGen = EstimateGenerator()
+        do {
+            let estimate = try await estimateGen.generateEstimate(
+                from: transcript,
+                clientName: "Client", // Extract from call
+                patientName: "Patient" // Extract from call
             )
+            
+            print("💰 Generated estimate: $\(estimate.total)")
+            
+            // Post notification to create consultation in the app
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("CreatePhoneConsultation"),
+                    object: nil,
+                    userInfo: [
+                        "transcript": transcript,
+                        "summary": summary,
+                        "actionItems": actionItems,
+                        "audioURL": audioURL.path,
+                        "duration": self.currentCallDuration,
+                        "estimate": estimate
+                    ]
+                )
+                
+                // Show notification about estimate
+                self.sendLocalNotification(
+                    title: "Estimate Generated",
+                    body: "Estimate for $\(String(format: "%.2f", estimate.total)) created from call"
+                )
+            }
+        } catch {
+            print("Failed to generate estimate: \(error)")
         }
     }
     

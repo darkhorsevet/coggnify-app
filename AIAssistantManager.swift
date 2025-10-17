@@ -13,6 +13,8 @@ class AIAssistantManager: NSObject, ObservableObject {
     @Published var messages: [AssistantMessage] = []
     @Published var isProcessing = false
     @Published var isListening = false
+    @Published var showingEstimate = false
+    @Published var generatedEstimate: VetEstimate?
     
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
@@ -416,6 +418,34 @@ class AIAssistantManager: NSObject, ObservableObject {
     private func requestSpeechPermission() {
         SFSpeechRecognizer.requestAuthorization { status in
             print("Speech recognition authorization: \(status)")
+        }
+    }
+    
+    // MARK: - Estimate Generation
+    
+    func createEstimate() {
+        // Extract conversation text
+        let conversationText = messages.map { message in
+            "\(message.isUser ? "Vet" : "Echo"): \(message.content)"
+        }.joined(separator: "\n\n")
+        
+        // Generate estimate from conversation
+        Task {
+            let estimateGen = EstimateGenerator()
+            do {
+                let estimate = try await estimateGen.generateEstimate(
+                    from: conversationText,
+                    clientName: "Client", // Would extract from context
+                    patientName: "Patient" // Would extract from context
+                )
+                
+                await MainActor.run {
+                    generatedEstimate = estimate
+                    showingEstimate = true
+                }
+            } catch {
+                print("Failed to generate estimate: \(error)")
+            }
         }
     }
 }

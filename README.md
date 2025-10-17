@@ -6,12 +6,13 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
 
 ## Features
 
-### 🤖 AI Field Assistant (NEW! Game Changer!)
+### 🤖 Echo - Your AI Assistant (GAME CHANGER!)
 - **Emergency protocol guidance** - Colic, laceration, choke, lameness, eye emergencies
 - **Drug dosage calculator** - Instant calculations by weight
 - **Voice input** - Hands-free operation in field situations
 - **Decision support** - Step-by-step clinical guidance
 - **Differential diagnosis** - AI-powered suggestions
+- **Automatic estimate generation** - Listens to calls/chats and creates invoices! 💰
 - **Quick reference** - Normal vitals, procedures, protocols
 - **Chat history** - Save important conversations to consultations
 
@@ -172,6 +173,34 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
 - Step-by-step procedure guidance
 
 **See `AI_ASSISTANT_GUIDE.md` for complete documentation!**
+
+### Automatic Estimate Generation (Huge Time-Saver! 💰)
+
+**Echo listens and creates estimates automatically:**
+
+1. **During phone call with Joe Robinson:**
+   - You: "I'll examine Thunder's lameness, probably need x-rays and some banamine"
+   - Call ends
+   - **Echo generates estimate**: Emergency call ($150) + Lameness exam ($125) + X-rays ($340) + Banamine ($15) = **$630**
+
+2. **Review the estimate** - Echo extracted everything
+3. **Tap "Email to Client"** - Joe gets it instantly
+4. **Joe approves before you arrive** - No billing surprises!
+
+**Works from:**
+- ✅ Phone call recordings
+- ✅ Echo chat conversations  
+- ✅ In-person consultation notes
+
+**Includes:**
+- 50+ common procedures pre-priced
+- Automatic quantity detection
+- Customizable pricing
+- Professional formatting
+- Email/SMS sending
+- PDF export
+
+**See `ESTIMATE_GENERATION_GUIDE.md` for complete guide!**
 
 ### Creating a Consultation
 
