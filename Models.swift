@@ -1,6 +1,6 @@
 //
 //  Models.swift
-//  VetScribe
+//  Notalyze
 //
 //  Data models for consultations and recordings
 //
@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 // MARK: - Consultation
-struct Consultation: Identifiable, Hashable {
+struct Consultation: Identifiable, Hashable, Codable {
     let id: UUID
     var patientName: String
     var breed: String
@@ -27,7 +27,7 @@ struct Consultation: Identifiable, Hashable {
     var assessment: String
     var plan: String
     
-    var audioFileURL: URL?
+    var audioFileURL: String?
     var transcript: String?
     
     init(
@@ -66,10 +66,10 @@ struct Consultation: Identifiable, Hashable {
 }
 
 // MARK: - Consultation Type
-enum ConsultationType: String, CaseIterable {
+enum ConsultationType: String, CaseIterable, Codable {
     case lamenessExam = "Lameness Exam"
     case routineCheckup = "Routine Checkup"
-    case colicevaluation = "Colic Evaluation"
+    case colicEvaluation = "Colic Evaluation"
     case dentalExam = "Dental Exam"
     case reproductiveCheck = "Reproductive Check"
     case prePurchaseExam = "Pre-Purchase Exam"
@@ -77,11 +77,25 @@ enum ConsultationType: String, CaseIterable {
     case emergency = "Emergency"
     case followUp = "Follow-up"
     
+    var displayName: String {
+        switch self {
+        case .lamenessExam: return "Lameness"
+        case .routineCheckup: return "Checkup"
+        case .colicEvaluation: return "Colic"
+        case .dentalExam: return "Dental"
+        case .reproductiveCheck: return "Repro"
+        case .prePurchaseExam: return "PPE"
+        case .woundCare: return "Wound"
+        case .emergency: return "Emergency"
+        case .followUp: return "Follow-up"
+        }
+    }
+    
     var icon: String {
         switch self {
         case .lamenessExam: return "figure.walk"
         case .routineCheckup: return "stethoscope"
-        case .colicevaluation: return "heart.text.square"
+        case .colicEvaluation: return "heart.text.square"
         case .dentalExam: return "cross.case.fill"
         case .reproductiveCheck: return "waveform.path.ecg"
         case .prePurchaseExam: return "doc.text.magnifyingglass"
@@ -95,7 +109,7 @@ enum ConsultationType: String, CaseIterable {
         switch self {
         case .lamenessExam: return .orange
         case .routineCheckup: return .green
-        case .colicevaluation: return .red
+        case .colicEvaluation: return .red
         case .dentalExam: return .blue
         case .reproductiveCheck: return .pink
         case .prePurchaseExam: return .purple
@@ -110,7 +124,7 @@ enum ConsultationType: String, CaseIterable {
 enum TemplateType: String, CaseIterable {
     case physicalExam = "Physical Exam"
     case lamenessExam = "Lameness Exam"
-    case colicevaluation = "Colic Assessment"
+    case colicEvaluation = "Colic Assessment"
     case dentalExam = "Dental Exam"
     case reproductiveCheck = "Reproductive Check"
     case prePurchaseExam = "Pre-Purchase Exam"
@@ -119,10 +133,97 @@ enum TemplateType: String, CaseIterable {
         switch self {
         case .physicalExam: return "stethoscope"
         case .lamenessExam: return "figure.walk"
-        case .colicevaluation: return "heart.text.square"
+        case .colicEvaluation: return "heart.text.square"
         case .dentalExam: return "cross.case.fill"
         case .reproductiveCheck: return "waveform.path.ecg"
         case .prePurchaseExam: return "doc.text.magnifyingglass"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .physicalExam: return .green
+        case .lamenessExam: return .orange
+        case .colicEvaluation: return .red
+        case .dentalExam: return .blue
+        case .reproductiveCheck: return .pink
+        case .prePurchaseExam: return .purple
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .physicalExam: return "General wellness examination"
+        case .lamenessExam: return "Gait and limb evaluation"
+        case .colicEvaluation: return "Abdominal emergency assessment"
+        case .dentalExam: return "Oral health examination"
+        case .reproductiveCheck: return "Breeding soundness exam"
+        case .prePurchaseExam: return "Comprehensive buyer's exam"
+        }
+    }
+    
+    var sections: [String] {
+        let baseSections = ["Subjective", "Objective", "Assessment", "Plan"]
+        return baseSections
+    }
+    
+    var keyPoints: [String] {
+        switch self {
+        case .physicalExam:
+            return [
+                "Overall body condition and weight",
+                "Vital signs (TPR)",
+                "Cardiovascular and respiratory systems",
+                "Musculoskeletal examination",
+                "Skin and coat condition",
+                "Vaccination and deworming status"
+            ]
+        case .lamenessExam:
+            return [
+                "Gait analysis at walk and trot",
+                "Palpation of limbs for heat/swelling",
+                "Flexion tests",
+                "Hoof examination",
+                "Grade of lameness (0-5 scale)",
+                "Response to diagnostic blocks"
+            ]
+        case .colicEvaluation:
+            return [
+                "Vital signs and pain score",
+                "Abdominal sounds in all quadrants",
+                "Rectal examination findings",
+                "Nasogastric tube reflux",
+                "Cardiovascular status",
+                "Surgical vs. medical management"
+            ]
+        case .dentalExam:
+            return [
+                "Overall oral health",
+                "Sharp enamel points",
+                "Hooks, ramps, and waves",
+                "Missing or damaged teeth",
+                "Bit seating if applicable",
+                "TMJ evaluation"
+            ]
+        case .reproductiveCheck:
+            return [
+                "Reproductive history",
+                "Ultrasound findings",
+                "Follicle development",
+                "Uterine tone and edema",
+                "Cervical status",
+                "Breeding recommendations"
+            ]
+        case .prePurchaseExam:
+            return [
+                "Complete physical examination",
+                "Lameness evaluation",
+                "Flexion tests all limbs",
+                "Radiographs as requested",
+                "Ophthalmic examination",
+                "Review of medical records",
+                "Suitability for intended use"
+            ]
         }
     }
 }

@@ -1,6 +1,6 @@
 //
 //  ConsultationDetailView.swift
-//  VetScribe
+//  Notalyze
 //
 //  Detailed view of a consultation with SOAP notes
 //
@@ -10,45 +10,73 @@ import SwiftUI
 struct ConsultationDetailView: View {
     let consultation: Consultation
     @State private var isEditing = false
+    @State private var showingShareSheet = false
+    @State private var showingExportOptions = false
     
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // MARK: - Patient Header
+                // Patient Header
                 PatientHeaderCard(consultation: consultation)
                 
-                // MARK: - SOAP Notes
-                SOAPNotesView(consultation: consultation, isEditing: $isEditing)
-            }
-            .padding(24)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(nsColor: .textBackgroundColor))
-        .toolbar {
-            ToolbarItemGroup {
-                Button(action: { isEditing.toggle() }) {
-                    Label(isEditing ? "Done" : "Edit", systemImage: isEditing ? "checkmark" : "pencil")
-                }
+                // SOAP Notes
+                SOAPNotesView(consultation: consultation)
                 
+                // Action Buttons
+                VStack(spacing: 12) {
+                    ActionButton(
+                        title: "Export as PDF",
+                        icon: "doc.fill",
+                        color: .red
+                    ) {
+                        showingExportOptions = true
+                    }
+                    
+                    ActionButton(
+                        title: "Share",
+                        icon: "square.and.arrow.up",
+                        color: .blue
+                    ) {
+                        showingShareSheet = true
+                    }
+                    
+                    ActionButton(
+                        title: "Send to EMR",
+                        icon: "arrow.up.doc",
+                        color: .green
+                    ) {
+                        // Send to EMR
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 20)
+            }
+            .padding()
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
-                    Button(action: {}) {
-                        Label("Export as PDF", systemImage: "doc.fill")
+                    Button(action: { isEditing.toggle() }) {
+                        Label(isEditing ? "Done Editing" : "Edit", systemImage: "pencil")
                     }
-                    Button(action: {}) {
-                        Label("Export SOAP Format", systemImage: "doc.text")
-                    }
+                    
                     Divider()
-                    Button(action: {}) {
-                        Label("Send to EMR", systemImage: "square.and.arrow.up")
+                    
+                    Button(role: .destructive, action: {}) {
+                        Label("Delete", systemImage: "trash")
                     }
                 } label: {
-                    Label("Export", systemImage: "square.and.arrow.up")
-                }
-                
-                Button(action: {}) {
-                    Label("Share", systemImage: "paperplane")
+                    Image(systemName: "ellipsis.circle")
                 }
             }
+        }
+        .confirmationDialog("Export Options", isPresented: $showingExportOptions) {
+            Button("Export as PDF") { }
+            Button("Export as SOAP Text") { }
+            Button("Export as Word Document") { }
+            Button("Cancel", role: .cancel) { }
         }
     }
 }
@@ -58,68 +86,66 @@ struct PatientHeaderCard: View {
     let consultation: Consultation
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Header with emoji
+        VStack(spacing: 16) {
+            // Horse emoji and name
             HStack {
                 Text("🐴")
                     .font(.system(size: 48))
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(consultation.patientName)
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.system(size: 26, weight: .bold))
                     
-                    Text("\(consultation.breed) • \(consultation.age) years old")
+                    Text("\(consultation.breed) • \(consultation.age) yrs")
                         .font(.system(size: 16))
                         .foregroundColor(.secondary)
                 }
                 
                 Spacer()
-                
-                ConsultationTypeBadge(type: consultation.type)
             }
-            .padding(20)
             
             Divider()
             
-            // Patient details grid
-            LazyVGrid(columns: [
-                GridItem(.flexible()),
-                GridItem(.flexible()),
-                GridItem(.flexible())
-            ], spacing: 16) {
-                DetailItem(label: "Owner", value: consultation.ownerName, icon: "person.fill")
-                DetailItem(label: "Location", value: consultation.location, icon: "mappin.circle.fill")
-                DetailItem(label: "Date", value: consultation.date.formatted(date: .abbreviated, time: .shortened), icon: "calendar")
-                DetailItem(label: "Sex", value: consultation.sex, icon: "pawprint.fill")
-                DetailItem(label: "Color", value: consultation.color, icon: "paintpalette.fill")
-                DetailItem(label: "Microchip", value: consultation.microchip, icon: "barcode")
+            // Details grid
+            VStack(spacing: 12) {
+                DetailRow(icon: "person.fill", label: "Owner", value: consultation.ownerName)
+                DetailRow(icon: "mappin.circle.fill", label: "Location", value: consultation.location)
+                DetailRow(icon: "calendar", label: "Date", value: consultation.date.formatted(date: .long, time: .shortened))
+                DetailRow(icon: "circle.fill", label: "Sex", value: consultation.sex)
+                DetailRow(icon: "paintpalette.fill", label: "Color", value: consultation.color)
+                
+                if !consultation.microchip.isEmpty && consultation.microchip != "Not set" {
+                    DetailRow(icon: "barcode", label: "Microchip", value: consultation.microchip)
+                }
             }
-            .padding(20)
         }
-        .background(Color(nsColor: .controlBackgroundColor))
+        .padding()
+        .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
     }
 }
 
-struct DetailItem: View {
+struct DetailRow: View {
+    let icon: String
     let label: String
     let value: String
-    let icon: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.system(size: 10))
-                    .foregroundColor(.secondary)
-                Text(label.uppercased())
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundColor(.secondary)
-            }
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 14))
+                .foregroundColor(.green)
+                .frame(width: 24)
+            
+            Text(label)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.secondary)
+                .frame(width: 80, alignment: .leading)
             
             Text(value)
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: 14))
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 }
@@ -127,7 +153,6 @@ struct DetailItem: View {
 // MARK: - SOAP Notes View
 struct SOAPNotesView: View {
     let consultation: Consultation
-    @Binding var isEditing: Bool
     
     var body: some View {
         VStack(spacing: 16) {
@@ -135,32 +160,28 @@ struct SOAPNotesView: View {
                 title: "Subjective",
                 icon: "text.bubble.fill",
                 color: .blue,
-                content: consultation.subjective,
-                isEditing: isEditing
+                content: consultation.subjective
             )
             
             SOAPSection(
                 title: "Objective",
                 icon: "stethoscope",
                 color: .green,
-                content: consultation.objective,
-                isEditing: isEditing
+                content: consultation.objective
             )
             
             SOAPSection(
                 title: "Assessment",
                 icon: "heart.text.square.fill",
                 color: .orange,
-                content: consultation.assessment,
-                isEditing: isEditing
+                content: consultation.assessment
             )
             
             SOAPSection(
                 title: "Plan",
                 icon: "list.clipboard.fill",
                 color: .purple,
-                content: consultation.plan,
-                isEditing: isEditing
+                content: consultation.plan
             )
         }
     }
@@ -172,76 +193,86 @@ struct SOAPSection: View {
     let icon: String
     let color: Color
     let content: String
-    let isEditing: Bool
     
-    @State private var editedContent: String = ""
+    @State private var isExpanded = true
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 10) {
-                Image(systemName: icon)
-                    .font(.system(size: 18))
-                    .foregroundColor(color)
-                
-                Text(title)
-                    .font(.system(size: 20, weight: .semibold))
-                
-                Spacer()
-                
-                Text("SOAP")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundColor(color)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(color.opacity(0.15))
-                    .cornerRadius(4)
+            Button(action: { withAnimation { isExpanded.toggle() } }) {
+                HStack {
+                    Image(systemName: icon)
+                        .font(.system(size: 18))
+                        .foregroundColor(color)
+                    
+                    Text(title)
+                        .font(.system(size: 18, weight: .semibold))
+                    
+                    Spacer()
+                    
+                    HStack(spacing: 8) {
+                        Text("SOAP")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(color)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(color.opacity(0.15))
+                            .cornerRadius(4)
+                        
+                        Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
+            .buttonStyle(.plain)
             
-            Divider()
-            
-            if isEditing {
-                TextEditor(text: $editedContent)
-                    .font(.system(size: 14))
-                    .frame(minHeight: 150)
-                    .padding(8)
-                    .background(Color(nsColor: .textBackgroundColor))
-                    .cornerRadius(6)
-            } else {
-                Text(content)
-                    .font(.system(size: 14))
-                    .lineSpacing(6)
+            if isExpanded {
+                Divider()
+                
+                Text(content.isEmpty ? "No notes recorded" : content)
+                    .font(.system(size: 15))
+                    .lineSpacing(4)
+                    .foregroundColor(content.isEmpty ? .secondary : .primary)
+                    .italic(content.isEmpty)
                     .textSelection(.enabled)
             }
         }
-        .padding(20)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .padding()
+        .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
-        .onAppear {
-            editedContent = content
-        }
     }
 }
 
-// MARK: - Consultation Type Badge
-struct ConsultationTypeBadge: View {
-    let type: ConsultationType
+// MARK: - Action Button
+struct ActionButton: View {
+    let title: String
+    let icon: String
+    let color: Color
+    let action: () -> Void
     
     var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: type.icon)
-                .font(.system(size: 10))
-            Text(type.rawValue)
-                .font(.system(size: 11, weight: .semibold))
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                    .font(.system(size: 16))
+                Text(title)
+                    .font(.system(size: 16, weight: .semibold))
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.secondary)
+            }
+            .foregroundColor(color)
+            .padding()
+            .background(Color(.systemBackground))
+            .cornerRadius(12)
         }
-        .foregroundColor(type.color)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(type.color.opacity(0.15))
-        .cornerRadius(6)
     }
 }
 
 #Preview {
-    ConsultationDetailView(consultation: Consultation.sampleData[0])
+    NavigationStack {
+        ConsultationDetailView(consultation: Consultation.sampleData[0])
+    }
 }
