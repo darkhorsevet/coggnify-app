@@ -29,6 +29,10 @@ struct Consultation: Identifiable, Hashable, Codable {
     
     var audioFileURL: String?
     var transcript: String?
+    var callDuration: TimeInterval?
+    var actionItems: [ActionItem]?
+    var callSummary: String?
+    var isPhoneConsultation: Bool
     
     init(
         id: UUID = UUID(),
@@ -45,7 +49,8 @@ struct Consultation: Identifiable, Hashable, Codable {
         subjective: String = "",
         objective: String = "",
         assessment: String = "",
-        plan: String = ""
+        plan: String = "",
+        isPhoneConsultation: Bool = false
     ) {
         self.id = id
         self.patientName = patientName
@@ -62,6 +67,7 @@ struct Consultation: Identifiable, Hashable, Codable {
         self.objective = objective
         self.assessment = assessment
         self.plan = plan
+        self.isPhoneConsultation = isPhoneConsultation
     }
 }
 

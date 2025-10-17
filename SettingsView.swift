@@ -12,29 +12,61 @@ struct SettingsView: View {
     @AppStorage("autoSave") private var autoSave = true
     @AppStorage("medicalTerminology") private var medicalTerminology = "Equine Veterinary"
     @AppStorage("exportFormat") private var exportFormat = "PDF"
+    @AppStorage("autoRecordCalls") private var autoRecordCalls = false
     
     var body: some View {
-        TabView {
-            GeneralSettingsView(
-                aiProvider: $aiProvider,
-                autoSave: $autoSave,
-                medicalTerminology: $medicalTerminology
-            )
-            .tabItem {
-                Label("General", systemImage: "gear")
+        NavigationStack {
+            Form {
+                Section("AI Transcription") {
+                    Picker("Provider", selection: $aiProvider) {
+                        Text("OpenAI Whisper").tag("OpenAI Whisper")
+                        Text("AssemblyAI").tag("AssemblyAI")
+                        Text("Google Speech-to-Text").tag("Google Speech-to-Text")
+                        Text("AWS Transcribe Medical").tag("AWS Transcribe Medical")
+                    }
+                    
+                    Picker("Medical Terminology", selection: $medicalTerminology) {
+                        Text("Equine Veterinary").tag("Equine Veterinary")
+                        Text("General Veterinary").tag("General Veterinary")
+                        Text("Small Animal").tag("Small Animal")
+                    }
+                }
+                
+                Section("Phone Call Recording") {
+                    Toggle("Auto-record calls", isOn: $autoRecordCalls)
+                    
+                    Text("⚠️ Recording laws vary by location. Always inform callers they're being recorded.")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                }
+                
+                Section("Recording") {
+                    Toggle("Auto-save recordings", isOn: $autoSave)
+                    Text("Automatically save audio recordings after transcription")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Section("Export") {
+                    Picker("Default Format", selection: $exportFormat) {
+                        Text("PDF").tag("PDF")
+                        Text("SOAP Text").tag("SOAP")
+                        Text("Microsoft Word").tag("DOCX")
+                        Text("Plain Text").tag("TXT")
+                    }
+                }
+                
+                Section("About") {
+                    HStack {
+                        Text("Version")
+                        Spacer()
+                        Text("1.0.0")
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
-            
-            IntegrationSettingsView()
-                .tabItem {
-                    Label("Integrations", systemImage: "arrow.triangle.2.circlepath")
-                }
-            
-            ExportSettingsView(exportFormat: $exportFormat)
-                .tabItem {
-                    Label("Export", systemImage: "square.and.arrow.up")
-                }
+            .navigationTitle("Settings")
         }
-        .frame(width: 500, height: 400)
     }
 }
 

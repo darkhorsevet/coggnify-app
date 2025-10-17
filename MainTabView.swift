@@ -10,6 +10,7 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject var consultationManager: ConsultationManager
     @StateObject private var audioRecorder = AudioRecorder()
+    @StateObject private var callManager = CallManager()
     @State private var selectedTab = 0
     
     var body: some View {
@@ -29,21 +30,32 @@ struct MainTabView: View {
                 }
                 .tag(1)
             
+            // Phone Calls
+            CallRecordingView(callManager: callManager)
+                .tabItem {
+                    Label("Phone Calls", systemImage: "phone.fill")
+                }
+                .badge(callManager.isInCall ? "•" : nil)
+                .tag(2)
+            
             // Templates
             TemplatesView()
                 .tabItem {
                     Label("Templates", systemImage: "doc.text")
                 }
-                .tag(2)
+                .tag(3)
             
             // Settings
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
-                .tag(3)
+                .tag(4)
         }
         .accentColor(.green)
+        .onAppear {
+            callManager.requestNotificationPermission()
+        }
     }
 }
 

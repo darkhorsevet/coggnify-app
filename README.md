@@ -6,6 +6,14 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
 
 ## Features
 
+### 📞 Phone Call Recording (NEW!)
+- **Automatic call detection** - Detects incoming and outgoing calls
+- **One-tap recording** - Start recording phone consultations instantly
+- **Call summary** - AI generates concise summaries of phone conversations
+- **Action items extraction** - Automatically identifies tasks and follow-ups
+- **Smart notifications** - Prompts to record when calls are detected
+- **Legal compliance** - Built-in reminders to inform callers
+
 ### 🎤 Smart Recording
 - Hands-free audio recording during consultations
 - Real-time audio level monitoring
@@ -74,20 +82,51 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
      - `ConsultationManager.swift`
      - `AudioRecorder.swift`
      - `SettingsView.swift`
+     - `CallManager.swift` ⭐ NEW
+     - `CallRecordingView.swift` ⭐ NEW
+     - `PhoneConsultationDetailView.swift` ⭐ NEW
 
-3. **Configure microphone permissions:**
-   - Open `Info.plist`
-   - Add the following key:
-     ```
-     Privacy - Microphone Usage Description
-     ```
-   - Value: `"Notalyze needs microphone access to record veterinary consultations"`
+3. **Configure permissions in Info.plist:**
+   - Copy the provided `Info.plist` or add these keys:
+     - `NSMicrophoneUsageDescription`: "Notalyze needs microphone access to record veterinary consultations and phone calls"
+     - `UIBackgroundModes`: Add "audio" and "voip" for call recording
 
-4. **Build and run:**
-   - Select your target device or simulator
+4. **Add required frameworks:**
+   - In Xcode, select your target
+   - Go to "Frameworks, Libraries, and Embedded Content"
+   - Add: `CallKit.framework`
+   - Add: `UserNotifications.framework`
+
+5. **Build and run:**
+   - Select your target device (phone call features require a real device)
    - Press ⌘+R to build and run
 
 ## Usage
+
+### Recording Phone Calls (Game Changer! 📞)
+
+**Perfect for client calls about their horses:**
+
+1. **Make or receive a call** from a client
+2. **App automatically detects** the call and shows a prompt
+3. **Tap "Start Recording"** (make sure to inform the caller)
+4. **Continue your conversation** naturally
+5. **Recording stops automatically** when the call ends
+6. **AI processes the call** and generates:
+   - Full transcript
+   - Call summary (2-3 sentences)
+   - Action items with deadlines
+   - Responsible parties for each task
+7. **Find it in your Consultations** list
+
+**Example Use Cases:**
+- Emergency colic calls at 2 AM
+- Follow-up check-ins with clients
+- Pre-appointment consultations
+- Post-procedure care instructions
+- Scheduling and coordination calls
+
+**Legal Note:** Recording laws vary by location. The app reminds you to inform callers they're being recorded. Always comply with local two-party consent laws.
 
 ### Creating a Consultation
 
@@ -128,7 +167,17 @@ A Granola-inspired iOS app specifically designed for equine veterinarians to rec
 4. **Use the menu** (⋯) to edit or delete
 5. **Export** as PDF, SOAP text, or send to your EMR system
 
-## AI Integration (To Be Implemented)
+## AI Integration
+
+### Phone Call Features
+
+The `CallManager.swift` file has placeholder methods ready for AI integration:
+
+1. **`transcribeAudio(fileURL:)`** - Transcribe the call recording
+2. **`generateCallSummary(transcript:)`** - Create a concise summary
+3. **`extractActionItems(transcript:)`** - Pull out tasks and follow-ups
+
+### Recommended AI Services
 
 The app is ready for AI transcription integration. Recommended services:
 
@@ -157,6 +206,20 @@ func transcribeAudio(fileURL: URL) async throws -> String {
 ```swift
 // Support for multiple languages
 // https://cloud.google.com/speech-to-text
+```
+
+### For Action Items Extraction
+Use GPT-4 or Claude with a prompt like:
+```swift
+let prompt = """
+Extract action items from this veterinary phone call transcript.
+For each action item, identify:
+- The specific task
+- Who is responsible (vet or client)
+- When it needs to be done
+
+Transcript: \(transcript)
+"""
 ```
 
 ## Customization
@@ -189,14 +252,19 @@ func sendToEMR() {
 
 ## Future Enhancements
 
+- [x] ✅ Phone call recording and transcription
+- [x] ✅ Action items extraction from calls
+- [x] ✅ Call summary generation
 - [ ] iCloud sync across devices
 - [ ] Photo/video attachment support
 - [ ] Offline mode with sync
 - [ ] Integration with practice management software
-- [ ] Client communication features
+- [ ] Client communication features via the app
 - [ ] Appointment scheduling
 - [ ] Medication tracking
 - [ ] Invoice generation
+- [ ] Automated follow-up reminders from action items
+- [ ] Integration with client databases
 
 ## License
 
