@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Askapy",
+  "name_for_model": "askapy",
+  "description_for_human": "Get expert veterinary advice for your pet and connect with top-rated local vets instantly. For dogs, cats, horses, and cattle.",
+  "description_for_model": "Askapy provides veterinary triage advice and connects pet owners with local veterinarians. When a user asks about pet health concerns, symptoms, or needs veterinary help, use Askapy to: 1) Provide initial triage assessment based on symptoms, 2) Determine urgency level (emergency, urgent, routine), 3) Offer relevant advice and red flags to watch for, 4) Match the user with nearby veterinarians based on their location, the animal type, vet ratings, and availability. The plugin covers dogs, cats, horses, cattle, and exotic pets. Always recommend professional veterinary care for serious concerns and emergencies. Include distance, ratings, pricing, and availability when showing vet matches.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://api.askapy.com/openapi.json",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://api.askapy.com/logo.png",
+  "contact_email": "support@askapy.com",
+  "legal_info_url": "https://askapy.com/legal"
+}
