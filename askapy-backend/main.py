@@ -347,10 +347,13 @@ def book_appointment(vet_id: str, appointment_type: str, contact_info: dict):
     }
     
     # TODO: 
-    # 1. Send booking to vet's dashboard
-    # 2. Charge customer
-    # 3. Bill vet (per-lead fee or deduct from subscription)
+    # 1. Send booking to VetQube dashboard
+    # 2. Charge customer for appointment
+    # 3. Bill vet $10 booking fee (on top of $69.99/month)
     # 4. Send confirmation emails
+    
+    # Charge vet $10 booking fee
+    print(f"💰 BOOKING COMPLETED: Charge {vet['name']} $10 booking fee")
     
     return {
         "success": True,
@@ -363,8 +366,8 @@ def log_lead(question: PetQuestion, matched_vets: List[Vet]):
     Log lead for billing/analytics
     
     Revenue model:
-    - Vet pays $15 per qualified lead shown
-    - OR: Vet pays $99/month subscription (unlimited leads)
+    - Vet pays $69.99/month subscription
+    - PLUS: $10 per booking completed
     """
     lead_data = {
         "timestamp": datetime.now().isoformat(),
@@ -377,9 +380,10 @@ def log_lead(question: PetQuestion, matched_vets: List[Vet]):
     # TODO: Save to database
     print(f"💰 LEAD LOGGED: {lead_data}")
     
-    # TODO: Bill vets (if per-lead model)
+    # Lead shown - already covered by $69.99/month subscription
+    # Will charge $10 when booking is completed
     for vet in matched_vets:
-        print(f"   💵 Charge {vet.name}: $15 lead fee")
+        print(f"   📊 Lead shown to {vet.name} (included in subscription)")
 
 # ============================================================================
 # HEALTH CHECK

@@ -67,38 +67,34 @@ curl -X POST http://localhost:8000/api/ask \
 
 ### For Vets (Revenue Sources):
 
-**Option 1: Per-Lead Pricing**
-- $15 per qualified lead shown
-- Only pay when your profile is displayed
-- Best for vets starting out
+**VetQube Pricing:**
+- **$69.99/month** subscription (unlimited leads shown)
+- **+ $10 per booking** completed
+- 14-day free trial
+- Cancel anytime
 
-**Option 2: Monthly Subscription**
-- $99/month - Unlimited leads
-- Featured placement
-- Priority ranking
-- Best for established clinics
-
-**Option 3: Hybrid (Recommended)**
-- $49/month base + $10 per booking
-- Lower subscription, pay for results
-- Most attractive to vets
+**Why vets love this:**
+- Predictable base cost
+- Only pay extra when they make money
+- No per-lead fees (unlimited exposure)
+- Simple, transparent pricing
 
 ### Projected Revenue:
 
-**Month 1-3 (100 vets):**
-- 100 vets × $49/month = $4,900/month
-- 500 leads × $10/booking = $5,000/month
-- **Total: ~$10,000/month**
+**Month 1-3 (100 vets in Dallas):**
+- 100 vets × $69.99/month = $6,999/month
+- 500 bookings × $10/booking = $5,000/month
+- **Total: ~$12,000/month**
 
-**Month 6 (500 vets):**
-- 500 vets × $49/month = $24,500/month
-- 2,500 leads × $10/booking = $25,000/month
-- **Total: ~$50,000/month**
+**Month 6 (500 vets - Dallas + Austin + Houston):**
+- 500 vets × $69.99/month = $34,995/month
+- 2,500 bookings × $10/booking = $25,000/month
+- **Total: ~$60,000/month**
 
-**Year 1 (2,000 vets):**
-- 2,000 vets × $49/month = $98,000/month
-- 10,000 leads × $10/booking = $100,000/month
-- **Total: ~$200,000/month = $2.4M/year**
+**Year 1 (2,000 vets - All Texas + expanding):**
+- 2,000 vets × $69.99/month = $139,980/month
+- 10,000 bookings × $10/booking = $100,000/month
+- **Total: ~$240,000/month = $2.88M/year**
 
 ---
 
