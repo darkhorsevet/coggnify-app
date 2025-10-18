@@ -46,6 +46,7 @@ class Vet(BaseModel):
     address: str
     lat: float
     lon: float
+    tier: str  # "basic", "featured", "premium"
 
 class TriageResponse(BaseModel):
     severity: str  # "emergency", "urgent", "routine"
@@ -71,9 +72,10 @@ MOCK_VETS = [
         "price_clinic": 85.00,
         "available_now": True,
         "phone": "(555) 123-4567",
-        "address": "123 Main St, Austin, TX",
-        "lat": 30.2672,
-        "lon": -97.7431
+        "address": "123 Main St, Dallas, TX",
+        "lat": 32.7767,
+        "lon": -96.7970,
+        "tier": "featured"  # $149.99/month - shown first!
     },
     {
         "id": "vet_002",
@@ -87,9 +89,10 @@ MOCK_VETS = [
         "price_clinic": 125.00,
         "available_now": True,
         "phone": "(555) 234-5678",
-        "address": "456 Oak Ave, Austin, TX",
-        "lat": 30.3072,
-        "lon": -97.7531
+        "address": "456 Oak Ave, Dallas, TX",
+        "lat": 32.8067,
+        "lon": -96.8070,
+        "tier": "premium"  # $249.99/month - TOP SPOT!
     },
     {
         "id": "vet_003",
@@ -103,9 +106,10 @@ MOCK_VETS = [
         "price_clinic": 150.00,
         "available_now": False,
         "phone": "(555) 345-6789",
-        "address": "789 Farm Rd, Dripping Springs, TX",
-        "lat": 30.1897,
-        "lon": -98.0861
+        "address": "789 Farm Rd, Plano, TX",
+        "lat": 33.0198,
+        "lon": -96.6989,
+        "tier": "basic"  # $69.99/month - standard listing
     }
 ]
 
@@ -177,7 +181,14 @@ def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
     return R * c
 
 def match_vets(animal_type: str, user_lat: float, user_lon: float, max_distance: float = 50) -> List[Vet]:
-    """Find vets that treat this animal type within radius"""
+    """
+    Find vets that treat this animal type within radius
+    
+    TIER PRIORITY (AEO - AI Engine Optimization!):
+    1. Premium vets (TOP SPOT - always first)
+    2. Featured vets (shown prominently)
+    3. Basic vets (sorted by rating + distance)
+    """
     matched = []
     
     for vet_data in MOCK_VETS:
@@ -192,8 +203,15 @@ def match_vets(animal_type: str, user_lat: float, user_lon: float, max_distance:
             vet_data["distance_miles"] = round(distance, 1)
             matched.append(Vet(**vet_data))
     
-    # Sort by rating, then distance
-    matched.sort(key=lambda v: (-v.rating, v.distance_miles))
+    # TIER-BASED SORTING (This is the $$ part!)
+    # Premium = 1, Featured = 2, Basic = 3
+    tier_priority = {"premium": 1, "featured": 2, "basic": 3}
+    
+    matched.sort(key=lambda v: (
+        tier_priority.get(v.tier, 999),  # Tier first (premium wins!)
+        -v.rating,                        # Then rating
+        v.distance_miles                  # Then distance
+    ))
     
     return matched[:5]  # Top 5 matches
 
