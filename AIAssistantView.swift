@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AIAssistantView: View {
     @StateObject private var assistantManager = AIAssistantManager()
+    @StateObject private var offlineManager = OfflineManager()
     @State private var messageText = ""
     @State private var showingEmergencyMenu = false
     @FocusState private var isTextFieldFocused: Bool
@@ -21,6 +22,9 @@ struct AIAssistantView: View {
                     .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
+                    // Offline Banner
+                    OfflineBanner(offlineManager: offlineManager)
+                    
                     // Emergency Quick Actions
                     if assistantManager.messages.isEmpty {
                         WelcomeAssistantView(assistantManager: assistantManager)

@@ -11,6 +11,7 @@ struct MainTabView: View {
     @EnvironmentObject var consultationManager: ConsultationManager
     @StateObject private var audioRecorder = AudioRecorder()
     @StateObject private var callManager = CallManager()
+    @StateObject private var reminderManager = ReminderManager()
     @State private var selectedTab = 0
     
     var body: some View {
@@ -37,27 +38,36 @@ struct MainTabView: View {
                 }
                 .tag(2)
             
+            // Follow-up Reminders (NEW!)
+            RemindersView()
+                .environmentObject(reminderManager)
+                .tabItem {
+                    Label("Follow-ups", systemImage: "bell.badge.fill")
+                }
+                .badge(reminderManager.overdueReminders.count > 0 ? reminderManager.overdueReminders.count : nil)
+                .tag(3)
+            
             // Phone Calls
             CallRecordingView(callManager: callManager)
                 .tabItem {
                     Label("Phone Calls", systemImage: "phone.fill")
                 }
                 .badge(callManager.isInCall ? "•" : nil)
-                .tag(3)
+                .tag(4)
             
             // Templates
             TemplatesView()
                 .tabItem {
                     Label("Templates", systemImage: "doc.text")
                 }
-                .tag(4)
+                .tag(5)
             
             // Settings
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
-                .tag(5)
+                .tag(6)
         }
         .accentColor(.green)
         .onAppear {

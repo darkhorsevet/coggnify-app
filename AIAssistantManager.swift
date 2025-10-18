@@ -16,6 +16,8 @@ class AIAssistantManager: NSObject, ObservableObject {
     @Published var showingEstimate = false
     @Published var generatedEstimate: VetEstimate?
     
+    private let offlineManager = OfflineManager()
+    
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
@@ -93,6 +95,11 @@ class AIAssistantManager: NSObject, ObservableObject {
     // MARK: - AI Integration
     
     private func getAIResponse(for message: String) async throws -> String {
+        // Check if offline
+        if !offlineManager.isOnline {
+            return getOfflineResponse(for: message)
+        }
+        
         // TODO: Integrate with OpenAI GPT-4, Anthropic Claude, or similar
         // Example using OpenAI:
         /*
@@ -113,6 +120,58 @@ class AIAssistantManager: NSObject, ObservableObject {
         
         // Mock responses for development
         return getMockResponse(for: message)
+    }
+    
+    private func getOfflineResponse(for message: String) -> String {
+        // Use cached offline protocols
+        let protocols = offlineManager.getOfflineProtocols()
+        let drugDB = offlineManager.getOfflineDrugDatabase()
+        let vitals = offlineManager.getOfflineVitalRanges()
+        
+        let lowercased = message.lowercased()
+        
+        // Match to offline protocols
+        if lowercased.contains("colic") {
+            return protocols[.colic] ?? "Offline data not available"
+        } else if lowercased.contains("laceration") || lowercased.contains("wound") {
+            return protocols[.laceration] ?? "Offline data not available"
+        } else if lowercased.contains("choke") {
+            return protocols[.choke] ?? "Offline data not available"
+        } else if lowercased.contains("lame") {
+            return protocols[.lameness] ?? "Offline data not available"
+        } else if lowercased.contains("eye") {
+            return protocols[.eyeEmergency] ?? "Offline data not available"
+        } else if lowercased.contains("dose") || lowercased.contains("drug") {
+            return protocols[.drugCalculator] ?? "Offline data not available"
+        } else if lowercased.contains("vital") || lowercased.contains("normal") {
+            return """
+            NORMAL VITAL RANGES (Offline):
+            
+            • Heart Rate: \(vitals.heartRate)
+            • Respiratory Rate: \(vitals.respiratoryRate)
+            • Temperature: \(vitals.temperature)
+            • CRT: \(vitals.capillaryRefillTime)
+            • Mucous Membranes: \(vitals.mucousMembranes)
+            • Gut Sounds: \(vitals.gutSounds)
+            
+            Note: \(vitals.notes)
+            """
+        }
+        
+        return """
+        📡 OFFLINE MODE
+        
+        I have limited offline access. Available protocols:
+        • Colic assessment
+        • Laceration management
+        • Choke protocol
+        • Lameness evaluation
+        • Eye emergency
+        • Drug dosage calculator
+        • Normal vital ranges
+        
+        Ask about any of these topics for offline guidance!
+        """
     }
     
     private func getMockResponse(for message: String) -> String {
