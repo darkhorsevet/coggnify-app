@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Camera Permission -->
+    <key>NSCameraUsageDescription</key>
+    <string>Horsimize needs camera access to scan feed tags and take photos of your horse for body condition scoring.</string>
+    
+    <!-- Photo Library Permission (optional, for saving photos) -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Horsimize can save photos of your horse to track body condition changes over time.</string>
+    
+    <!-- Photo Library Add Permission -->
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Horsimize can save body condition photos to your photo library.</string>
+    
+    <!-- App Display Name -->
+    <key>CFBundleDisplayName</key>
+    <string>Horsimize</string>
+    
+    <!-- App Version -->
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    
+    <key>CFBundleVersion</key>
+    <string>1</string>
+</dict>
+</plist>
