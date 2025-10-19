@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetQube - Your Lead Dashboard</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --light-gray: #f3f4f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notification-badge {
+            position: relative;
+        }
+
+        .notification-badge .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        /* Main Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); }
+        .stat-icon.green { background: rgba(16, 185, 129, 0.1); }
+        .stat-icon.yellow { background: rgba(245, 158, 11, 0.1); }
+        .stat-icon.purple { background: rgba(139, 92, 246, 0.1); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .stat-change.up {
+            color: var(--success);
+        }
+
+        .stat-change.down {
+            color: var(--danger);
+        }
+
+        /* Leads Section */
+        .section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            background: var(--light-gray);
+            color: var(--gray);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Lead Cards */
+        .leads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .lead-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .lead-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .lead-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 12px;
+        }
+
+        .lead-urgency {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .lead-urgency.emergency {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .lead-urgency.urgent {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .lead-urgency.routine {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .lead-time {
+            font-size: 12px;
+            color: var(--gray);
+            margin-left: auto;
+        }
+
+        .lead-question {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .lead-details {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .lead-detail {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lead-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Billing Section */
+        .billing-info {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .billing-card {
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+        }
+
+        .billing-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .billing-item:last-child {
+            border-bottom: none;
+        }
+
+        .billing-total {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .billing-info {
+                grid-template-columns: 1fr;
+            }
+
+            .lead-details {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">🐾</div>
+            <div class="logo-text">VetQube</div>
+        </div>
+        
+        <div class="user-menu">
+            <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700;">
+                ⭐ FEATURED
+            </div>
+            <div class="notification-badge">
+                🔔
+                <span class="badge">5</span>
+            </div>
+            <div style="font-weight: 600;">Dr. Robert Martinez</div>
+            <div style="color: var(--gray); font-size: 14px;">Dallas, TX</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon blue">📊</div>
+                </div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">New Leads Today</div>
+                <div class="stat-change up">↑ 23% from yesterday</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon green">✅</div>
+                </div>
+                <div class="stat-value">48</div>
+                <div class="stat-label">Bookings This Month</div>
+                <div class="stat-change up">↑ $480 in booking fees</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon yellow">⭐</div>
+                </div>
+                <div class="stat-value">4.9</div>
+                <div class="stat-label">Your Rating</div>
+                <div class="stat-change">127 reviews</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon purple">💰</div>
+                </div>
+                <div class="stat-value">$629.99</div>
+                <div class="stat-label">This Month's Bill</div>
+                <div class="stat-change">⭐ Featured tier ($149.99) + $480 bookings</div>
+            </div>
+        </div>
+
+        <!-- Active Leads -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Active Leads</h2>
+                <div class="filter-tabs">
+                    <button class="tab active">All</button>
+                    <button class="tab">Emergency</button>
+                    <button class="tab">Urgent</button>
+                    <button class="tab">Routine</button>
+                </div>
+            </div>
+
+            <div class="leads-list">
+                <!-- Emergency Lead -->
+                <div class="lead-card">
+                    <div class="lead-header">
+                        <span class="lead-urgency emergency">⚠️ Emergency</span>
+                        <span class="lead-time">2 minutes ago</span>
+                    </div>
+                    <div class="lead-question">
+                        "My dog got into chocolate and won't stop vomiting"
+                    </div>
+                    <div class="lead-details">
+                        <div class="lead-detail">
+                            🐕 <strong>Dog</strong> - Golden Retriever
+                        </div>
+                        <div class="lead-detail">
+                            👤 <strong>Sarah Johnson</strong>
+                        </div>
+                        <div class="lead-detail">
+                            📍 <strong>8.3 miles away</strong>
+                        </div>
+                    </div>
+                    <div class="lead-actions">
+                        <button class="btn btn-primary">📞 Call Client Now</button>
+                        <button class="btn btn-secondary">📝 View Details</button>
+                    </div>
+                </div>
+
+                <!-- Urgent Lead -->
+                <div class="lead-card">
+                    <div class="lead-header">
+                        <span class="lead-urgency urgent">Urgent</span>
+                        <span class="lead-time">15 minutes ago</span>
+                    </div>
+                    <div class="lead-question">
+                        "My horse is limping badly on his front leg"
+                    </div>
+                    <div class="lead-details">
+                        <div class="lead-detail">
+                            🐴 <strong>Horse</strong> - Thoroughbred
+                        </div>
+                        <div class="lead-detail">
+                            👤 <strong>Mike Davis</strong>
+                        </div>
+                        <div class="lead-detail">
+                            📍 <strong>14.2 miles away</strong>
+                        </div>
+                    </div>
+                    <div class="lead-actions">
+                        <button class="btn btn-primary">📞 Call Client</button>
+                        <button class="btn btn-secondary">📅 Schedule Visit</button>
+                    </div>
+                </div>
+
+                <!-- Routine Lead -->
+                <div class="lead-card">
+                    <div class="lead-header">
+                        <span class="lead-urgency routine">Routine</span>
+                        <span class="lead-time">1 hour ago</span>
+                    </div>
+                    <div class="lead-question">
+                        "My cat hasn't been eating much for 2 days"
+                    </div>
+                    <div class="lead-details">
+                        <div class="lead-detail">
+                            🐱 <strong>Cat</strong> - Domestic Shorthair
+                        </div>
+                        <div class="lead-detail">
+                            👤 <strong>Jennifer Lee</strong>
+                        </div>
+                        <div class="lead-detail">
+                            📍 <strong>5.7 miles away</strong>
+                        </div>
+                    </div>
+                    <div class="lead-actions">
+                        <button class="btn btn-primary">💬 Message Client</button>
+                        <button class="btn btn-secondary">📅 Book Appointment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Monthly Billing</h2>
+                <button class="btn btn-secondary">💳 Payment Methods</button>
+            </div>
+
+            <div class="billing-info">
+                <div class="billing-card">
+                    <h3 style="margin-bottom: 16px;">Current Month (October 2025)</h3>
+                    
+                    <div class="billing-item">
+                        <span>VetQube Subscription (⭐ Featured Tier)</span>
+                        <strong>$149.99</strong>
+                    </div>
+                    
+                    <div class="billing-item">
+                        <span>Bookings (48 × $10)</span>
+                        <strong>$480.00</strong>
+                    </div>
+                    
+                    <div class="billing-item">
+                        <span>Leads Shown</span>
+                        <strong>127 (Unlimited - Shown First!)</strong>
+                    </div>
+                    
+                    <div class="billing-item">
+                        <span>Total Due Nov 1</span>
+                        <span class="billing-total">$629.99</span>
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: rgba(16,185,129,0.1); border-radius: 8px; font-size: 13px;">
+                        💡 <strong>Featured Tier Benefits:</strong><br>
+                        • Shown FIRST in all search results<br>
+                        • ⭐ Featured badge on your listing<br>
+                        • 2.5x more leads than Basic tier
+                    </div>
+                </div>
+
+                <div class="billing-card" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
+                    <h3 style="margin-bottom: 16px;">Your ROI</h3>
+                    <div style="font-size: 36px; font-weight: 700; margin: 20px 0;">
+                        687%
+                    </div>
+                    <p style="font-size: 14px; opacity: 0.9;">
+                        You earned $4,320 from 48 bookings<br>
+                        Investment: $549.99<br>
+                        <strong>Profit: $3,770</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple tab filtering
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.textContent.toLowerCase();
+                console.log('Filter by:', filter);
+                
+                // In production, filter leads by urgency level
+            });
+        });
+
+        // Simulate real-time lead updates
+        setInterval(() => {
+            const badge = document.querySelector('.badge');
+            const currentCount = parseInt(badge.textContent);
+            
+            // Random chance of new lead
+            if (Math.random() > 0.7) {
+                badge.textContent = currentCount + 1;
+                
+                // Show notification (in production)
+                console.log('🔔 New lead received!');
+            }
+        }, 10000); // Check every 10 seconds
+    </script>
+</body>
+</html>

@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetScribe - AI Veterinary Consultation Notes</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --accent: #FF6F00;
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --surface-elevated: #242424;
+            --text: #ffffff;
+            --text-secondary: #aaaaaa;
+            --border: #333333;
+            --error: #f44336;
+            --success: #4CAF50;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo {
+            font-size: 32px;
+        }
+        
+        .brand {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .brand-tagline {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* Main Layout */
+        .main {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 0;
+            height: calc(100vh - 73px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        .consultation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .consultation-item {
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .consultation-item:hover {
+            background: var(--surface-elevated);
+            border-color: var(--primary);
+        }
+        
+        .consultation-item.active {
+            background: var(--surface-elevated);
+            border-color: var(--primary-light);
+        }
+        
+        .consultation-date {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .consultation-patient {
+            font-weight: 600;
+            margin: 4px 0;
+        }
+        
+        .consultation-type {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Main Content */
+        .content {
+            background: var(--bg);
+            overflow-y: auto;
+            padding: 24px;
+        }
+        
+        .welcome-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .welcome-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+        
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .welcome-text {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin-bottom: 32px;
+        }
+        
+        .note-view {
+            display: none;
+        }
+        
+        .note-view.active {
+            display: block;
+        }
+        
+        .patient-header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .patient-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .patient-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .detail-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .note-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .note-section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .note-section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .note-section-badge {
+            font-size: 11px;
+            padding: 4px 8px;
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--primary-light);
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .note-content {
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        .note-content p {
+            margin-bottom: 12px;
+        }
+        
+        .note-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+        
+        .note-content li {
+            margin-bottom: 6px;
+        }
+        
+        /* Right Panel */
+        .right-panel {
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .recording-section {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .record-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            font-size: 48px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .record-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(76, 175, 80, 0.4);
+        }
+        
+        .record-button.recording {
+            background: var(--error);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .recording-status {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .recording-time {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-light);
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .recording-time.active {
+            color: var(--error);
+        }
+        
+        .template-section {
+            margin-bottom: 20px;
+        }
+        
+        .template-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .template-btn {
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .template-btn:hover {
+            background: var(--surface-elevated);
+            border-color: var(--primary);
+        }
+        
+        .template-icon {
+            font-size: 20px;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--surface-elevated);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--surface);
+        }
+        
+        .export-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main {
+                grid-template-columns: 250px 1fr 300px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar,
+            .right-panel {
+                display: none;
+            }
+        }
+        
+        /* Transcript */
+        .transcript-section {
+            margin-top: 20px;
+        }
+        
+        .transcript-content {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        
+        .timestamp {
+            color: var(--primary-light);
+            font-weight: 600;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">🐴</div>
+                <div class="brand">
+                    <div class="brand-name">VetScribe</div>
+                    <div class="brand-tagline">AI Veterinary Consultation Notes</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="showSettings()">
+                    ⚙️ Settings
+                </button>
+                <button class="btn btn-primary" onclick="newConsultation()">
+                    ➕ New Consultation
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Layout -->
+        <div class="main">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="section-title">Recent Consultations</div>
+                    <div class="consultation-list" id="consultationList">
+                        <div class="consultation-item active" onclick="loadConsultation('demo')">
+                            <div class="consultation-date">Today, 2:30 PM</div>
+                            <div class="consultation-patient">Thunder - Thoroughbred</div>
+                            <div class="consultation-type">Lameness Exam</div>
+                        </div>
+                        <div class="consultation-item" onclick="loadConsultation('demo2')">
+                            <div class="consultation-date">Today, 10:15 AM</div>
+                            <div class="consultation-patient">Bella - Quarter Horse</div>
+                            <div class="consultation-type">Routine Check-up</div>
+                        </div>
+                        <div class="consultation-item" onclick="loadConsultation('demo3')">
+                            <div class="consultation-date">Yesterday, 4:00 PM</div>
+                            <div class="consultation-patient">Shadow - Arabian</div>
+                            <div class="consultation-type">Colic Follow-up</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="content">
+                <div class="welcome-state" id="welcomeState">
+                    <div class="welcome-icon">🎙️</div>
+                    <div class="welcome-title">Welcome to VetScribe</div>
+                    <div class="welcome-text">
+                        Start recording your veterinary consultations and let AI create structured SOAP notes automatically.
+                        Perfect for equine veterinarians on the go.
+                    </div>
+                    <button class="btn btn-primary" onclick="newConsultation()">
+                        🎤 Start Recording Consultation
+                    </button>
+                </div>
+                
+                <div class="note-view active" id="noteView">
+                    <div class="patient-header">
+                        <div class="patient-name">Thunder</div>
+                        <div class="patient-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Breed</div>
+                                <div class="detail-value">Thoroughbred</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Age</div>
+                                <div class="detail-value">8 years old</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Owner</div>
+                                <div class="detail-value">Sarah Johnson</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Date</div>
+                                <div class="detail-value">Oct 17, 2025 - 2:30 PM</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Location</div>
+                                <div class="detail-value">Meadowbrook Farm</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Consultation Type</div>
+                                <div class="detail-value">Lameness Examination</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="note-section">
+                        <div class="note-section-header">
+                            <div class="note-section-title">📋 Subjective</div>
+                            <div class="note-section-badge">SOAP</div>
+                        </div>
+                        <div class="note-content">
+                            <p><strong>Chief Complaint:</strong> Right front limb lameness, grade 2/5, noticed 3 days ago after training session.</p>
+                            <p><strong>History:</strong> Owner reports Thunder was working well during dressage training when he suddenly became reluctant to extend the right front leg. No witnessed trauma. Horse has been resting in paddock since onset. No previous history of lameness.</p>
+                            <p><strong>Recent Changes:</strong> Increased training intensity two weeks prior to event. New farrier visit 10 days ago.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="note-section">
+                        <div class="note-section-header">
+                            <div class="note-section-title">🔍 Objective</div>
+                        </div>
+                        <div class="note-content">
+                            <p><strong>Visual Examination:</strong></p>
+                            <ul>
+                                <li>No visible swelling or heat in distal limb</li>
+                                <li>Mild sensitivity on digital palpation of flexor tendons</li>
+                                <li>No increased digital pulse</li>
+                                <li>Normal hoof temperature</li>
+                            </ul>
+                            <p><strong>Gait Analysis:</strong></p>
+                            <ul>
+                                <li>Lameness grade 2/5 at walk, more pronounced at trot</li>
+                                <li>Positive response to flexion test (right front fetlock)</li>
+                                <li>Lameness improves on soft ground</li>
+                            </ul>
+                            <p><strong>Vital Signs:</strong> TPR within normal limits. General body condition score 6/9.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="note-section">
+                        <div class="note-section-header">
+                            <div class="note-section-title">🩺 Assessment</div>
+                        </div>
+                        <div class="note-content">
+                            <p><strong>Primary Diagnosis:</strong> Suspected superficial digital flexor tendon strain (right front limb)</p>
+                            <p><strong>Differential Diagnoses:</strong></p>
+                            <ul>
+                                <li>Suspensory ligament desmitis</li>
+                                <li>Fetlock joint pathology</li>
+                                <li>Distal limb soft tissue injury</li>
+                            </ul>
+                            <p><strong>Recommended Diagnostics:</strong> Ultrasound examination of flexor tendons and suspensory ligament recommended to confirm diagnosis and assess severity.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="note-section">
+                        <div class="note-section-header">
+                            <div class="note-section-title">💊 Plan</div>
+                        </div>
+                        <div class="note-content">
+                            <p><strong>Immediate Treatment:</strong></p>
+                            <ul>
+                                <li>Stall rest with hand walking only (10 minutes 2x daily)</li>
+                                <li>Cold therapy: 20 minutes 3x daily for 5 days</li>
+                                <li>NSAIDs: Phenylbutazone 2g PO q12h for 7 days</li>
+                                <li>Support bandaging when not being cold-hosed</li>
+                            </ul>
+                            <p><strong>Follow-up Care:</strong></p>
+                            <ul>
+                                <li>Schedule ultrasound examination in 3 days</li>
+                                <li>Re-evaluation in 2 weeks</li>
+                                <li>Rehabilitation protocol to be determined based on ultrasound findings</li>
+                            </ul>
+                            <p><strong>Client Education:</strong> Discussed importance of rest period, monitoring for progression, and realistic timeline for return to work (likely 6-12 weeks depending on severity).</p>
+                            <p><strong>Prognosis:</strong> Good to guarded depending on ultrasound findings.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <div class="recording-section">
+                    <div class="recording-status">Ready to Record</div>
+                    <button class="record-button" id="recordBtn" onclick="toggleRecording()">
+                        🎤
+                    </button>
+                    <div class="recording-time" id="recordingTime">00:00</div>
+                </div>
+                
+                <div class="template-section">
+                    <div class="section-title">Templates</div>
+                    <div class="template-buttons">
+                        <button class="template-btn" onclick="useTemplate('examination')">
+                            <span class="template-icon">🔍</span>
+                            <span>Physical Exam</span>
+                        </button>
+                        <button class="template-btn" onclick="useTemplate('lameness')">
+                            <span class="template-icon">🦵</span>
+                            <span>Lameness Exam</span>
+                        </button>
+                        <button class="template-btn" onclick="useTemplate('colic')">
+                            <span class="template-icon">🤒</span>
+                            <span>Colic Assessment</span>
+                        </button>
+                        <button class="template-btn" onclick="useTemplate('dental')">
+                            <span class="template-icon">🦷</span>
+                            <span>Dental Exam</span>
+                        </button>
+                        <button class="template-btn" onclick="useTemplate('reproductive')">
+                            <span class="template-icon">🤰</span>
+                            <span>Reproductive Check</span>
+                        </button>
+                        <button class="template-btn" onclick="useTemplate('prepurchase')">
+                            <span class="template-icon">📄</span>
+                            <span>Pre-Purchase Exam</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="section-title">Export</div>
+                    <div class="export-buttons">
+                        <button class="btn btn-secondary" onclick="exportPDF()">
+                            📄 Export PDF
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportSOAP()">
+                            📋 Export SOAP
+                        </button>
+                        <button class="btn btn-secondary" onclick="sendToEMR()">
+                            💾 Send to EMR
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="transcript-section">
+                    <div class="section-title">Live Transcript</div>
+                    <div class="transcript-content" id="transcript">
+                        <p style="color: #666; font-style: italic;">Transcript will appear here during recording...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        console.log('🐴 VetScribe initializing...');
+        
+        let isRecording = false;
+        let recordingStartTime = null;
+        let recordingInterval = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        
+        function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+        
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    console.log('Recording saved:', audioBlob.size, 'bytes');
+                    // Here you would send to your AI transcription service
+                    processRecording(audioBlob);
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                recordingStartTime = Date.now();
+                
+                document.getElementById('recordBtn').classList.add('recording');
+                document.getElementById('recordBtn').textContent = '⏹️';
+                document.querySelector('.recording-status').textContent = 'Recording...';
+                document.getElementById('recordingTime').classList.add('active');
+                
+                recordingInterval = setInterval(updateRecordingTime, 1000);
+                
+                // Simulate live transcript
+                simulateTranscript();
+                
+                console.log('Recording started');
+            } catch (error) {
+                console.error('Error starting recording:', error);
+                alert('Could not access microphone. Please check permissions.');
+            }
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                
+                isRecording = false;
+                clearInterval(recordingInterval);
+                
+                document.getElementById('recordBtn').classList.remove('recording');
+                document.getElementById('recordBtn').textContent = '🎤';
+                document.querySelector('.recording-status').textContent = 'Processing...';
+                document.getElementById('recordingTime').classList.remove('active');
+                
+                console.log('Recording stopped');
+                
+                setTimeout(() => {
+                    document.querySelector('.recording-status').textContent = 'Ready to Record';
+                    document.getElementById('recordingTime').textContent = '00:00';
+                }, 2000);
+            }
+        }
+        
+        function updateRecordingTime() {
+            const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('recordingTime').textContent = `${minutes}:${seconds}`;
+        }
+        
+        function processRecording(audioBlob) {
+            // This is where you'd integrate with:
+            // - OpenAI Whisper API
+            // - AssemblyAI
+            // - Google Speech-to-Text
+            // - AWS Transcribe Medical
+            console.log('Processing recording with AI...');
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                alert('Recording processed! In production, this would use AI to transcribe and structure your notes into SOAP format.');
+            }, 1500);
+        }
+        
+        function simulateTranscript() {
+            const transcript = document.getElementById('transcript');
+            const sampleText = [
+                'Patient is Thunder, eight-year-old Thoroughbred gelding...',
+                'Owner reports right front limb lameness, grade two out of five...',
+                'Noticed three days ago after dressage training session...',
+                'On physical examination, mild sensitivity on palpation of flexor tendons...'
+            ];
+            
+            let index = 0;
+            transcript.innerHTML = '';
+            
+            const transcriptInterval = setInterval(() => {
+                if (index < sampleText.length && isRecording) {
+                    const timestamp = document.createElement('span');
+                    timestamp.className = 'timestamp';
+                    timestamp.textContent = `[${Math.floor(Math.random() * 5)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}]`;
+                    
+                    const text = document.createTextNode(' ' + sampleText[index]);
+                    const p = document.createElement('p');
+                    p.appendChild(timestamp);
+                    p.appendChild(text);
+                    
+                    transcript.appendChild(p);
+                    transcript.scrollTop = transcript.scrollHeight;
+                    index++;
+                } else {
+                    clearInterval(transcriptInterval);
+                }
+            }, 3000);
+        }
+        
+        function newConsultation() {
+            const patientName = prompt('Enter patient name (horse):');
+            if (patientName) {
+                alert(`New consultation started for ${patientName}. Click the microphone button to start recording.`);
+            }
+        }
+        
+        function loadConsultation(id) {
+            console.log('Loading consultation:', id);
+            document.querySelectorAll('.consultation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.consultation-item').classList.add('active');
+        }
+        
+        function useTemplate(type) {
+            console.log('Using template:', type);
+            alert(`${type.charAt(0).toUpperCase() + type.slice(1)} template loaded. Start recording to fill in the sections automatically.`);
+        }
+        
+        function exportPDF() {
+            alert('Exporting consultation as PDF... (Feature coming soon)');
+        }
+        
+        function exportSOAP() {
+            alert('Exporting in SOAP format... (Feature coming soon)');
+        }
+        
+        function sendToEMR() {
+            alert('Sending to Practice Management Software... (Feature coming soon)');
+        }
+        
+        function showSettings() {
+            alert('Settings:\n\n• AI Provider: OpenAI Whisper\n• Medical Terminology: Equine Veterinary\n• Auto-save: Enabled\n• EMR Integration: Not configured\n\n(Settings panel coming soon)');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ VetScribe initialized successfully');
+        });
+        
+    </script>
+</body>
+</html>

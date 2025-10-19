@@ -1,0 +1,273 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Askapy Veterinary API",
+    "description": "AI-powered veterinary triage and local vet matching for pet health questions",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.askapy.com"
+    }
+  ],
+  "paths": {
+    "/api/ask": {
+      "post": {
+        "operationId": "askVetQuestion",
+        "summary": "Get veterinary advice and find local vets",
+        "description": "Provide pet health triage advice and match with local veterinarians based on symptoms, animal type, and location",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["question", "animal_type"],
+                "properties": {
+                  "question": {
+                    "type": "string",
+                    "description": "The pet health question or concern from the owner",
+                    "example": "My dog is limping on his front leg and seems to be in pain"
+                  },
+                  "animal_type": {
+                    "type": "string",
+                    "enum": ["dog", "cat", "horse", "cattle", "exotic"],
+                    "description": "Type of animal"
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "User's location (city, state, or zip code)",
+                    "example": "Dallas, TX"
+                  },
+                  "urgency": {
+                    "type": "string",
+                    "enum": ["emergency", "urgent", "routine"],
+                    "description": "Perceived urgency level",
+                    "default": "routine"
+                  },
+                  "symptoms": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of observed symptoms"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response with triage advice and vet matches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "severity": {
+                      "type": "string",
+                      "enum": ["emergency", "urgent", "routine"],
+                      "description": "Assessed severity level"
+                    },
+                    "advice": {
+                      "type": "string",
+                      "description": "Veterinary triage advice and guidance"
+                    },
+                    "red_flags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Warning signs that require immediate attention"
+                    },
+                    "should_see_vet": {
+                      "type": "boolean",
+                      "description": "Whether the pet should see a veterinarian"
+                    },
+                    "matched_vets": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Vet"
+                      },
+                      "description": "List of nearby veterinarians matched to the query"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vets/{vet_id}": {
+      "get": {
+        "operationId": "getVetDetails",
+        "summary": "Get detailed information about a specific veterinarian",
+        "parameters": [
+          {
+            "name": "vet_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the veterinarian"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed vet information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/book/{vet_id}": {
+      "post": {
+        "operationId": "bookAppointment",
+        "summary": "Book an appointment with a veterinarian",
+        "parameters": [
+          {
+            "name": "vet_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["appointment_type", "contact_info"],
+                "properties": {
+                  "appointment_type": {
+                    "type": "string",
+                    "enum": ["video", "clinic"],
+                    "description": "Type of appointment"
+                  },
+                  "contact_info": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Booking confirmation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "booking": {
+                      "type": "object"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Vet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique vet identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Veterinarian's name"
+          },
+          "specialty": {
+            "type": "string",
+            "description": "Area of veterinary specialty"
+          },
+          "rating": {
+            "type": "number",
+            "format": "float",
+            "description": "Average rating (0-5 stars)"
+          },
+          "review_count": {
+            "type": "integer",
+            "description": "Number of reviews"
+          },
+          "distance_miles": {
+            "type": "number",
+            "format": "float",
+            "description": "Distance from user in miles"
+          },
+          "animals_treated": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Types of animals this vet treats"
+          },
+          "price_video": {
+            "type": "number",
+            "format": "float",
+            "description": "Price for video consultation"
+          },
+          "price_clinic": {
+            "type": "number",
+            "format": "float",
+            "description": "Price for in-clinic visit"
+          },
+          "available_now": {
+            "type": "boolean",
+            "description": "Whether vet is currently available"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone number"
+          },
+          "address": {
+            "type": "string",
+            "description": "Physical address"
+          },
+          "tier": {
+            "type": "string",
+            "enum": ["basic", "featured", "premium"],
+            "description": "Vet's subscription tier (affects placement)"
+          }
+        }
+      }
+    }
+  }
+}
