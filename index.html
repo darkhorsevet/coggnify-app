@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coggnify - AI Horse Documentation</title>
-    
+    <title>FeedTag Scan | Horse Nutrition Companion</title>
     <style>
         * {
             margin: 0;
@@ -13,308 +12,585 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
-            background: #0f0f0f;
-            color: #fff;
+            font-family: "Inter", "Roboto", system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 20% 20%, rgba(210, 105, 30, 0.12), transparent 25%),
+                        radial-gradient(circle at 80% 10%, rgba(255, 107, 53, 0.1), transparent 25%),
+                        #0f0f0f;
+            color: #f5f5f5;
             padding: 0;
             overflow-x: hidden;
+            line-height: 1.5;
         }
-        
+
         .app {
             width: 100vw;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            background: linear-gradient(145deg, rgba(15, 15, 15, 0.94), rgba(20, 18, 18, 0.95));
         }
-        
+
+        .content {
+            width: min(1200px, 100%);
+            padding: 60px 20px 80px;
+        }
+
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 48px;
         }
-        
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(210, 105, 30, 0.12);
+            color: #ff9b60;
+            font-weight: 600;
+            margin-bottom: 18px;
+            border: 1px solid rgba(210, 105, 30, 0.3);
+        }
+
         .logo {
-            font-size: 64px;
-            margin-bottom: 16px;
-            filter: drop-shadow(0 4px 8px rgba(210, 105, 30, 0.3));
+            font-size: 52px;
+            margin-bottom: 14px;
+            filter: drop-shadow(0 6px 14px rgba(210, 105, 30, 0.35));
         }
-        
+
         .title {
-            font-size: 32px;
-            font-weight: 700;
+            font-size: clamp(32px, 5vw, 42px);
+            font-weight: 800;
             margin-bottom: 12px;
-            background: linear-gradient(45deg, #D2691E, #ff6b35);
+            letter-spacing: -0.5px;
+            background: linear-gradient(120deg, #ffb17a, #ff6b35 45%, #d2691e 80%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-        
+
         .subtitle {
             font-size: 18px;
-            color: #aaa;
-            margin-bottom: 8px;
-        }
-        
-        .description {
-            font-size: 14px;
-            color: #666;
-            max-width: 400px;
-            margin: 0 auto;
-            line-height: 1.5;
-        }
-        
-        .upload-area {
-            border: 2px dashed #D2691E;
-            border-radius: 16px;
-            padding: 40px;
-            text-align: center;
-            background: rgba(210, 105, 30, 0.05);
-            cursor: pointer;
-            margin: 20px;
-            max-width: 400px;
-            transition: all 0.3s ease;
-        }
-        
-        .upload-area:hover {
-            background: rgba(210, 105, 30, 0.1);
-            border-color: #ff6b35;
-            transform: translateY(-2px);
-        }
-        
-        .upload-icon {
-            font-size: 48px;
+            color: #b5b5b5;
             margin-bottom: 16px;
         }
-        
-        .upload-text {
+
+        .description {
+            font-size: 15px;
+            color: #8c8c8c;
+            max-width: 740px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin: 32px 0 14px;
+        }
+
+        .card { 
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+        }
+
+        .snapshot {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .snapshot .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(25, 25, 25, 0.92));
+        }
+
+        .card h3 {
             font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            color: #ffb17a;
         }
-        
-        .upload-hint {
+
+        .card p, .card ul {
+            color: #c4c4c4;
             font-size: 14px;
-            color: #aaa;
-            margin-bottom: 20px;
         }
-        
-        .status {
-            margin: 20px;
+
+        .card ul {
+            padding-left: 18px;
+            margin-top: 8px;
+        }
+
+        .panel {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .callout {
+            margin: 18px 0;
             padding: 16px;
-            background: #1a1a1a;
             border-radius: 12px;
-            max-width: 500px;
-            text-align: center;
-            border: 1px solid #333;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #d9d9d9;
+            font-size: 14px;
         }
-        
-        .buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
+
+        .callout strong {
+            color: #ffb17a;
         }
-        
+
+        .panel-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(25, 25, 25, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
+        }
+
+        .panel-card h2 {
+            margin-bottom: 12px;
+            font-size: 20px;
+            color: #ffb17a;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #b0b0b0;
+            margin-bottom: 6px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            color: #f5f5f5;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
         .btn {
-            background: linear-gradient(135deg, #D2691E, #ff6b35);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #d2691e, #ff6b35);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 14px 32px rgba(210, 105, 30, 0.35);
         }
-        
+
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #f0f0f0;
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
         .btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(210, 105, 30, 0.3);
+            box-shadow: 0 16px 32px rgba(210, 105, 30, 0.38);
         }
-        
-        .btn.secondary {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid #333;
+
+        .status {
+            margin-top: 12px;
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e8e8e8;
+            font-size: 14px;
         }
-        
-        .processing {
-            display: none;
-            align-items: center;
-            gap: 12px;
-            margin-top: 16px;
+
+        .status strong {
+            color: #ffb17a;
         }
-        
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #333;
-            border-top: 2px solid #D2691E;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+
+        .result {
+            margin-top: 14px;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.35);
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .pill-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
         }
-        
-        .file-input {
-            display: none;
+
+        .pill {
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+            color: #d3d3d3;
+        }
+
+        .footer-note {
+            margin-top: 26px;
+            text-align: center;
+            color: #7a7a7a;
+            font-size: 12px;
+        }
+
+        @media (max-width: 640px) {
+            .content { padding: 36px 16px 60px; }
+            .panel { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="app">
-        <div class="header">
-            <div class="logo">🐴</div>
-            <h1 class="title">Coggnify</h1>
-            <p class="subtitle">AI-Powered Horse Documentation</p>
-            <p class="description">Upload your horse video and let Luma AI create professional 360° documentation</p>
-        </div>
-        
-        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-            <div class="upload-icon">📹</div>
-            <div class="upload-text">Upload Horse Video</div>
-            <div class="upload-hint">Walk around your horse • 10-30 seconds • MP4/MOV</div>
-            <input type="file" id="fileInput" class="file-input" accept="video/*" onchange="uploadVideo(this.files[0])">
-        </div>
-        
-        <div class="status" id="status">
-            ✅ Ready to upload horse videos to Luma AI
-            <div class="processing" id="processing">
-                <div class="spinner"></div>
-                <span>Processing with Luma AI...</span>
+        <div class="content">
+            <div class="header">
+                <div class="badge">🐴 Equine Vet Concept</div>
+                <div class="logo">🥕</div>
+                <h1 class="title">FeedTag Scan</h1>
+                <p class="subtitle">Instantly check if a feed bag suits your horse</p>
+                <p class="description">Scan or type the tag on a feed sack, pair it with your horse's weight, workload, and health flags, and get a clear go/no-go recommendation with vet-grade notes on ration size, NSC risk, and forage pairing.</p>
             </div>
-        </div>
-        
-        <div class="buttons">
-            <button class="btn" onclick="testConnection()">🧪 Test Connection</button>
-            <button class="btn secondary" onclick="showDemo()">👀 View Demo</button>
-            <button class="btn secondary" onclick="showInfo()">ℹ️ About</button>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Why it matters</h3>
+                    <p>Most owners eyeball nutrition. This companion keeps horses off the metabolic rollercoaster by matching feed formulation to a vetted profile instead of marketing claims.</p>
+                </div>
+                <div class="card">
+                    <h3>How a scan works</h3>
+                    <ul>
+                        <li>Capture the printed feed tag or type the lot number.</li>
+                        <li>We decode protein, fat, NSC, and feeding directions.</li>
+                        <li>We overlay your horse's workload, weight, age, and risk flags.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>What you get</h3>
+                    <ul>
+                        <li>Green/yellow/red suitability with rationale.</li>
+                        <li>Daily pounds to feed with forage pairing guidance.</li>
+                        <li>Auto-alerts for laminitis/PPID/ulcer-friendly selections.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Preview it right now</h3>
+                    <ul>
+                        <li>Open <strong>index.html</strong> directly or run <code>python -m http.server 8000</code> and visit <code>http://localhost:8000</code>.</li>
+                        <li>The sample "Balanced Maintenance Pellets" scan is already preloaded.</li>
+                        <li>No backend needed — it is a single static page with baked-in demo data.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="snapshot">
+                <div class="card">
+                    <h3>Instant static snapshot</h3>
+                    <p>If you see a blank screen in your viewer, the preview is already embedded here with no scripts required. The live card on the right mirrors what the JavaScript will render.</p>
+                    <ul>
+                        <li>Balanced Maintenance Pellets (12% protein · 5% fat · NSC 12%).</li>
+                        <li>For a 1,050 lb horse on easy work: 15.8–21.0 lbs hay/day.</li>
+                        <li>Recommendation: forage-first plus a vitamin/mineral balancer.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Always-on preview</h3>
+                    <p style="margin-bottom:8px;">✅ Suitable — Balanced Maintenance Pellets vs easy work level.</p>
+                    <p style="margin-bottom:8px;">This horse needs <strong>15.8–21.0 lbs hay/day</strong>. Keep on forage-first with vitamin/mineral balancer.</p>
+                    <p style="margin-bottom:8px; color:#bcbcbc;">👍 Wins: Calorie-light option to prevent unwanted weight gain</p>
+                    <p style="margin:0; color:#bcbcbc;">⚠️ No major cautions detected.</p>
+                </div>
+            </div>
+
+            <noscript>
+                <div class="callout">
+                    <strong>Instant preview (no scripts required):</strong> You should already see the sample suitability snapshot for Balanced Maintenance Pellets below. If JavaScript is disabled, this static preview stays visible so you can review the concept without running any code.
+                </div>
+            </noscript>
+
+            <div class="panel">
+                <div class="panel-card">
+                    <h2>Horse profile</h2>
+                    <label for="horseName">Horse name (optional)</label>
+                    <input id="horseName" type="text" placeholder="e.g., Willow"> 
+
+                    <label for="weight">Weight (lbs)</label>
+                    <input id="weight" type="number" min="400" max="1800" placeholder="1050" value="1050">
+
+                    <label for="workload">Work level</label>
+                    <select id="workload">
+                        <option value="easy">Pasture/maintenance</option>
+                        <option value="light">Light (2-3 rides/week)</option>
+                        <option value="moderate">Moderate (lessons, low-level shows)</option>
+                        <option value="intense">Intense (eventing/barrels)</option>
+                    </select>
+
+                    <label for="age">Age band</label>
+                    <select id="age">
+                        <option value="adult">Adult</option>
+                        <option value="senior">Senior (15+)</option>
+                        <option value="young">Young/rehab</option>
+                    </select>
+
+                    <label for="flags">Health flags</label>
+                    <textarea id="flags" placeholder="Laminitis history, PPID, ulcers, insulin resistance"></textarea>
+
+                    <div class="pill-row">
+                        <div class="pill">1.5–2% bodyweight forage baseline</div>
+                        <div class="pill">Split meals to protect hindgut</div>
+                        <div class="pill">Aim NSC < 12% for metabolic horses</div>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <h2>Feed tag scan</h2>
+                    <label for="tag">Bag tag or product code</label>
+                    <input id="tag" type="text" placeholder="Type code from the feed tag" value="COGG-1234">
+
+                    <label for="notes">Notes from the bag (optional)</label>
+                    <textarea id="notes" placeholder="e.g., 14% protein, 8% fat, beet pulp-based"></textarea>
+
+                    <div class="pill-row" id="sampleTags"></div>
+
+                    <button class="btn" id="checkBtn">🔍 Check suitability</button>
+                    <button class="btn secondary" id="resetBtn" style="margin-left: 8px;">↺ Reset</button>
+
+                    <div class="status" id="status">Preview loaded with Balanced Maintenance Pellets — auto-ran on page open. Tap a sample tag to rerun.</div>
+                    <div class="result" id="result">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <div style="font-size:22px;">✅</div>
+                            <div>
+                                <strong>Suitable</strong>
+                                <div style="color:#bcbcbc;font-size:13px;">Balanced Maintenance Pellets vs easy work level</div>
+                            </div>
+                        </div>
+                        <p style="margin-bottom:8px;">This horse needs <strong>15.8–21.0 lbs hay/day</strong>. Keep on forage-first with vitamin/mineral balancer.</p>
+                        <p style="color:#bcbcbc;margin-bottom:8px;">Feed tag: 12% protein · 5% fat · NSC 12%</p>
+                        <p><strong>👍 Wins:</strong> Calorie-light option to prevent unwanted weight gain</p>
+                        <p><strong>✅ No major cautions detected.</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top: 18px;">
+                <div class="panel-card">
+                    <h2>What we analyze</h2>
+                    <ul>
+                        <li><strong>Energy &amp; protein</strong>: matches pounds/day to workload and body weight.</li>
+                        <li><strong>NSC &amp; starch</strong>: flags risk for laminitis/PPID/ulcers.</li>
+                        <li><strong>Forage pairing</strong>: keeps hay first, feed as a supplement.</li>
+                        <li><strong>Label honesty</strong>: highlights marketing vs. formulation gaps.</li>
+                    </ul>
+                </div>
+                <div class="panel-card">
+                    <h2>Roadmap</h2>
+                    <ul>
+                        <li>Camera OCR to read guaranteed analysis and directions.</li>
+                        <li>Batch logging for barns and boarding operations.</li>
+                        <li>Reminders when bags change lots or formulations update.</li>
+                        <li>Shareable vet notes for clients and barn managers.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="footer-note">This is a concept landing page for an equine veterinarian tool. Always confirm with your own ration calculations and forage testing.</p>
         </div>
     </div>
-    
+
     <script>
-        console.log('🐴 Coggnify loading...');
-        
-        async function uploadVideo(file) {
-            if (!file) {
-                console.log('No file selected');
+        document.addEventListener('DOMContentLoaded', () => {
+        const feeds = {
+            'COGG-1234': {
+                name: 'Balanced Maintenance Pellets',
+                protein: 12,
+                fat: 5,
+                nsc: 12,
+                focus: 'easy',
+                notes: 'Low NSC, beet pulp forward, vitamin/mineral balancer style',
+            },
+            'COGG-5678': {
+                name: 'Performance Plus Mix',
+                protein: 14,
+                fat: 8,
+                nsc: 18,
+                focus: 'moderate',
+                notes: 'Higher starch for glycogen replenishment; pair with alfalfa for ulcer buffer',
+            },
+            'COGG-9012': {
+                name: 'Senior Care Complete',
+                protein: 16,
+                fat: 10,
+                nsc: 20,
+                focus: 'senior',
+                notes: 'Includes pre/probiotics; soften with warm water for dentition issues',
+            },
+            'COGG-4455': {
+                name: 'Metabolic Safe Cube',
+                protein: 11,
+                fat: 4,
+                nsc: 10,
+                focus: 'metabolic',
+                notes: 'Soakable cube with chromium and magnesium; tailored for IR/PPID horses',
+            },
+        };
+
+        const workloadFactors = {
+            easy: 1.0,
+            light: 1.1,
+            moderate: 1.25,
+            intense: 1.5,
+        };
+
+        const sampleTagRow = document.getElementById('sampleTags');
+        Object.keys(feeds).forEach((code) => {
+            const pill = document.createElement('button');
+            pill.className = 'pill';
+            pill.style.cursor = 'pointer';
+            pill.textContent = code;
+            pill.addEventListener('click', () => {
+                document.getElementById('tag').value = code;
+                document.getElementById('status').textContent = `Loaded sample tag ${code} (${feeds[code].name}).`;
+            });
+            sampleTagRow.appendChild(pill);
+        });
+
+        function estimateRation(weightLbs, workload) {
+            const forageMin = weightLbs * 0.015;
+            const forageMax = weightLbs * 0.02;
+            const factor = workloadFactors[workload] || 1.0;
+            const concentrateLbs = Math.max(0, ((factor - 1) * weightLbs) * 0.01);
+            return { forageMin, forageMax, concentrateLbs, factor };
+        }
+
+        function evaluateFeed(feed, profile) {
+            const { forageMin, forageMax, concentrateLbs, factor } = estimateRation(profile.weight, profile.workload);
+            const riskFlags = [];
+            const positives = [];
+
+            if (profile.flags.match(/laminitis|ppid|insulin|ir|metabolic/i)) {
+                if (feed.nsc > 12) riskFlags.push('NSC above 12% target for metabolic/PPID horses');
+                else positives.push('NSC stays within metabolic-safe range');
+            }
+
+            if (profile.workload === 'intense' && feed.nsc < 14) {
+                riskFlags.push('Energy may be low for intense work; add fat or alfalfa');
+            }
+
+            if (profile.age === 'senior' && feed.focus !== 'senior') {
+                riskFlags.push('Consider a senior-formulated feed with added digestibility support');
+            }
+
+            if (feed.focus === 'metabolic') positives.push('Formulated for metabolic/IR horses');
+            if (feed.focus === 'easy' && profile.workload !== 'intense') positives.push('Calorie-light option to prevent unwanted weight gain');
+            if (feed.fat >= 8) positives.push('Added fat supports cool calories and topline');
+
+            const concentrateAmount = Math.max(concentrateLbs, 2 * factor).toFixed(1);
+            const recommendation = concentrateLbs < 0.5 ? 'Keep on forage-first with vitamin/mineral balancer.' : `Feed ${concentrateAmount} lbs/day split in 2-3 meals.`;
+
+            const status = riskFlags.length ? 'caution' : 'approved';
+
+            return {
+                status,
+                forageRange: `${forageMin.toFixed(1)}–${forageMax.toFixed(1)} lbs hay/day`,
+                recommendation,
+                positives,
+                riskFlags,
+                concentrateAmount,
+                factor,
+            };
+        }
+
+        function renderResult(summary, feed, profile) {
+            const result = document.getElementById('result');
+            const statusIcon = summary.status === 'approved' ? '✅' : '⚠️';
+            const name = profile.horse || 'This horse';
+
+            result.innerHTML = `
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                    <div style="font-size:22px;">${statusIcon}</div>
+                    <div>
+                        <strong>${summary.status === 'approved' ? 'Suitable' : 'Use caution'}</strong>
+                        <div style="color:#bcbcbc;font-size:13px;">${feed.name} vs ${profile.workload} work level</div>
+                    </div>
+                </div>
+                <p style="margin-bottom:8px;">${name} needs <strong>${summary.forageRange}</strong>. ${summary.recommendation}</p>
+                <p style="color:#bcbcbc;margin-bottom:8px;">Feed tag: ${feed.protein}% protein · ${feed.fat}% fat · NSC ${feed.nsc}%</p>
+                ${summary.positives.length ? `<p><strong>👍 Wins:</strong> ${summary.positives.join('; ')}</p>` : ''}
+                ${summary.riskFlags.length ? `<p><strong>⚠️ Watch:</strong> ${summary.riskFlags.join('; ')}</p>` : '<p><strong>✅ No major cautions detected.</strong></p>'}
+            `;
+        }
+
+        function handleCheck() {
+            const weight = parseFloat(document.getElementById('weight').value || '0');
+            const workload = document.getElementById('workload').value;
+            const age = document.getElementById('age').value;
+            const flags = document.getElementById('flags').value.trim();
+            const tag = document.getElementById('tag').value.trim().toUpperCase();
+            const horse = document.getElementById('horseName').value.trim();
+
+            const status = document.getElementById('status');
+            const result = document.getElementById('result');
+
+            if (!weight || weight < 400) {
+                status.textContent = 'Please enter a realistic weight.';
+                result.innerHTML = '';
                 return;
             }
-            
-            console.log('File selected:', file.name, file.size);
-            
-            var status = document.getElementById('status');
-            var processing = document.getElementById('processing');
-            
-            status.innerHTML = '🔄 Uploading to Luma AI...';
-            processing.style.display = 'flex';
-            
-            try {
-                console.log('Sending to Netlify function...');
-                
-                var response = await fetch('/.netlify/functions/test', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        prompt: 'Create a smooth 360-degree view of this horse for veterinary documentation',
-                        filename: file.name,
-                        size: file.size,
-                        type: file.type
-                    })
-                });
-                
-                console.log('Response status:', response.status);
-                
-                var result = await response.json();
-                console.log('Response data:', result);
-                
-                processing.style.display = 'none';
-                
-                if (result.success) {
-                    status.innerHTML = '✅ Upload successful! Luma AI processing started...';
-                    console.log('Success:', result.data);
-                } else {
-                    status.innerHTML = '❌ Error: ' + (result.message || 'Unknown error');
-                    console.error('API Error:', result);
-                }
-                
-            } catch (error) {
-                processing.style.display = 'none';
-                status.innerHTML = '❌ Upload failed: ' + error.message;
-                console.error('Upload error:', error);
+
+            const feed = feeds[tag];
+            if (!feed) {
+                status.textContent = 'Tag not recognized. Add the tag notes so we can map it later.';
+                result.innerHTML = '';
+                return;
             }
+
+            status.textContent = `Analyzing ${feed.name} for a ${weight} lb horse (${workload} work)...`;
+
+            const profile = { weight, workload, age, flags, horse };
+            const summary = evaluateFeed(feed, profile);
+            renderResult(summary, feed, profile);
         }
-        
-        async function testConnection() {
-            console.log('Testing connection...');
-            
-            var status = document.getElementById('status');
-            status.innerHTML = '🧪 Testing Luma AI connection...';
-            
-            try {
-                var response = await fetch('/.netlify/functions/luma', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        test: true
-                    })
-                });
-                
-                console.log('Test response:', response.status);
-                
-                if (response.ok) {
-                    var result = await response.json();
-                    console.log('Test result:', result);
-                    
-                    if (result.apiKeySet) {
-                        status.innerHTML = '✅ Connection test successful! API key configured.';
-                    } else {
-                        status.innerHTML = '⚠️ Function works but API key not set in environment variables';
-                    }
-                } else {
-                    status.innerHTML = '❌ Connection test failed: HTTP ' + response.status;
-                }
-                
-            } catch (error) {
-                console.error('Test error:', error);
-                status.innerHTML = '❌ Connection error: ' + error.message;
-            }
+
+        function handleReset() {
+            document.getElementById('horseName').value = '';
+            document.getElementById('weight').value = '1050';
+            document.getElementById('workload').value = 'easy';
+            document.getElementById('age').value = 'adult';
+            document.getElementById('flags').value = '';
+            document.getElementById('tag').value = 'COGG-1234';
+            document.getElementById('notes').value = '';
+            document.getElementById('status').textContent = 'Ready to scan a feed tag. Use a sample code to simulate camera scanning.';
+            document.getElementById('result').innerHTML = '';
         }
-        
-        function showDemo() {
-            var demoText = '🐴 Demo Info:\n\n1. Record a video walking around your horse\n2. Upload the video here\n3. Luma AI creates a professional 360° viewer\n4. Add interactive hotspots for veterinary documentation\n\nPerfect for insurance, sales, and medical records!';
-            alert(demoText);
-        }
-        
-        function showInfo() {
-            var infoText = 'ℹ️ Coggnify Features:\n\n• AI-powered 360° horse documentation\n• Professional quality like car dealerships\n• Interactive hotspots for medical notes\n• USDA compliance reporting\n• Veterinary integration\n• Insurance documentation';
-            alert(infoText);
-        }
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ Coggnify initialized successfully');
-            console.log('Ready to upload horse videos');
+
+        document.getElementById('checkBtn').addEventListener('click', handleCheck);
+        document.getElementById('resetBtn').addEventListener('click', handleReset);
+
+        // Show an immediate preview so viewers can see how the scan result looks
+        document.getElementById('status').textContent = 'Preview loaded with Balanced Maintenance Pellets — auto-ran on page open. Tap a sample tag to rerun.';
+        handleCheck();
         });
-        
-        // Error handling
-        window.addEventListener('error', function(e) {
-            console.error('JavaScript Error:', e.error);
-            var status = document.getElementById('status');
-            if (status) {
-                status.innerHTML = '❌ JavaScript error: ' + e.message;
-            }
-        });
-        
     </script>
 </body>
 </html>
